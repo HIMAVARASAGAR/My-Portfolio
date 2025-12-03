@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Syne:wght@400;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide default cursor everywhere (except where we override later) */
+html,
+body,
+* {
+  cursor: none !important;
+}
+
+/* Explicitly keep it hidden on typical clickable things as well */
+a,
+button,
+[role="button"],
+.cursor-pointer,
+.cursor-hover {
+  cursor: none !important;
+}
+
+/* Optional: keep I-beam for typing fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  cursor: text; /* or none if you want full custom even on inputs */
+}
+
+body {
+  background-color: #A0A5B1; /* The Igloo Grey-Blue Base */
+  color: #1a1a1a;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+/* Industrial Thin Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #A0A5B1; }
+::-webkit-scrollbar-thumb { background: #1a1a1a; }
+::-webkit-scrollbar-thumb:hover { background: #ffffff; }
+
+::selection { background: #1a1a1a; color: white; }
+
+/* Glass Panel Utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+/* GLOBAL: disable text selection + hide default cursor */
+html,
+body,
+body * {
+  cursor: none !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Allow selecting text in inputs if needed */
+input,
+textarea {
+  cursor: text !important;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
