@@ -6,8 +6,7 @@ import Projects from "./components/Projects";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import { AnimatePresence } from "framer-motion";
-import Loader from "./components/Loader";
-import { SpeedInsights } from "@vercel/speed-insights/react"
+import Loader from "./components/Loader"
 /**
  * Scrambling nav link like a glitchy rebuild.
  */
@@ -188,7 +187,6 @@ export default function App() {
           <Projects />
           <About />
           <Contact />
-          <SpeedInsights />
         </main>
       </div>
     </>
