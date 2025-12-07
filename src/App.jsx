@@ -391,7 +391,7 @@ function ContactSection() {
             </form>
 
             <p className="text-[10px] text-slate-400">
-              Messages are sent securely via EmailJS · no page reloads.
+              Messages are sent securely via EmailJS.
             </p>
           </motion.div>
         </motion.div>
