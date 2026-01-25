@@ -6,7 +6,8 @@ import ProjectCarousel from "./components/ProjectCarousel.jsx";
 import SkillsBand from "./components/SkillsBand.jsx";
 import BackgroundOrbits from "./components/BackgroundOrbits.jsx";
 import LoadingScreen from "./components/LoadingScreen.jsx";
-import emailjs from "emailjs-com";
+import emailjs from "@emailjs/browser";
+import AIChatWidget from "./components/AIChatWidget";
 
 // full-width sections, no borders
 const sectionOuter = "w-full py-16 md:py-20";
@@ -618,6 +619,8 @@ export default function App() {
 
         <Footer />
       </div>
+      <AIChatWidget />
+
     </div>
   );
 }

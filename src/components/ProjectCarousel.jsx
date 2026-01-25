@@ -72,18 +72,22 @@ export default function ProjectCarousel() {
           <span className="hidden sm:inline">Focused view · one at a time</span>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={() => go(-1)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm text-slate-600 hover:text-slate-900 hover:shadow-md transition"
-          >
+      <motion.button
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.91 }}
+        onClick={() => go(-1)}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm text-slate-600 hover:text-slate-900 hover:shadow-md transition"
+      >
             <ChevronLeft size={16} />
-          </button>
-          <button
-            onClick={() => go(1)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm text-slate-600 hover:text-slate-900 hover:shadow-md transition"
-          >
+</motion.button>
+    <motion.button
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.91 }}
+        onClick={() => go(1)}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm text-slate-600 hover:text-slate-900 hover:shadow-md transition"
+      >
             <ChevronRight size={16} />
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -91,11 +95,11 @@ export default function ProjectCarousel() {
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            className="absolute inset-0 rounded-3xl bg-white/60 backdrop-blur-sm shadow-lg shadow-slate-200/70 px-5 py-5 md:px-7 md:py-6 flex flex-col justify-between"
+            initial={{ opacity: 0, y: 32, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -26, scale: 0.92 }}
+            transition={{ duration: 0.5, ease: "anticipate" }}
+            className="absolute inset-0 rounded-3xl bg-white/60 backdrop-blur-md shadow-xl shadow-sky-100/80 px-5 py-5 md:px-7 md:py-6 flex flex-col justify-between border border-slate-200/50"
           >
             <div className="space-y-2">
               <h3 className="text-lg md:text-xl font-semibold text-slate-900">

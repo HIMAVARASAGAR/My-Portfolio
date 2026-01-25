@@ -69,10 +69,11 @@ export default function SkillsBand() {
             className="absolute left-0 top-0 flex items-center gap-10 whitespace-nowrap"
             animate={{ x: ["0%", "-50%"] }}
             transition={{
-              duration: 32,
+              duration: 24,
               repeat: Infinity,
               ease: "linear",
             }}
+            whileHover={{ scale: 1.025 }}
           >
             {row1.map((skill, i) => (
               <span
@@ -91,10 +92,11 @@ export default function SkillsBand() {
             className="absolute left-0 top-0 flex items-center gap-10 whitespace-nowrap opacity-75"
             animate={{ x: ["-50%", "0%"] }}
             transition={{
-              duration: 36,
+              duration: 26,
               repeat: Infinity,
               ease: "linear",
             }}
+            whileHover={{ scale: 1.018 }}
           >
             {row2.map((skill, i) => (
               <span

@@ -5,51 +5,39 @@ export default function LoadingScreen() {
     <motion.div
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-50/90 backdrop-blur select-none"
+      exit={{ opacity: 0, filter: "blur(12px)" }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-sky-100 via-emerald-50 to-amber-50 select-none"
     >
-      {/* big breathing gradient glow */}
+      {/* Soft animated glow overlay with subtle motion */}
       <motion.div
-        className="absolute h-[420px] w-[420px] rounded-full bg-gradient-to-br from-sky-300 via-emerald-300 to-amber-300 blur-[100px] opacity-70"
+        className="absolute inset-0"
+        initial={{ opacity: 1, scale: 1 }}
         animate={{
-          scale: [1, 1.15, 0.92, 1.08, 1],
-          rotate: [0, 15, -10, 5, 0],
+          opacity: [0.95, 0.90, 0.98, 0.96, 0.92, 0.95],
+          scale: [1, 1.04, 0.97, 1.02, 1],
         }}
+        exit={{ opacity: 0.65, scale: 1.12 }}
         transition={{
-          duration: 6,
+          duration: 3.5,
           repeat: Infinity,
           ease: "easeInOut",
+        }}
+        style={{
+          background: "radial-gradient(ellipse 75% 60% at 55% 38%, rgba(56,189,248,0.16), transparent 100%), " +
+            "radial-gradient(ellipse 40% 34% at 35% 68%, rgba(16,185,129,0.11), transparent 100%), " +
+            "radial-gradient(ellipse 40% 42% at 80% 68%, rgba(251,191,36,0.15), transparent 100%)",
+          filter: "blur(0px)",
         }}
       />
-
-      {/* core orb */}
+      {/* Subtle white-top fade for "washed light" look */}
       <motion.div
-        className="relative h-40 w-40 rounded-full bg-slate-900/90 shadow-xl shadow-slate-900/30 flex items-center justify-center"
-        animate={{
-          scale: [1, 1.06, 0.97, 1.03, 1],
-          borderRadius: ["50%", "46%", "54%", "48%", "50%"],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        {/* inner pulse */}
-        <motion.div
-          className="absolute h-24 w-24 rounded-full bg-white/15 blur-xl"
-          animate={{
-            opacity: [0.2, 0.5, 0.2],
-            scale: [1, 1.25, 1],
-          }}
-          transition={{
-            duration: 2.4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </motion.div>
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0.22 }}
+        animate={{ opacity: [0.22, 0.19, 0.24, 0.17, 0.22] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        style={{ background: "linear-gradient(180deg, #fff 0%, transparent 40%)" }}
+      />
     </motion.div>
   );
 }

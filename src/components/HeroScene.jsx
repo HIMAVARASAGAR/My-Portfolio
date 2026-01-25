@@ -2,20 +2,31 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
 
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+
 function SpinningCube() {
+    const meshRef = useRef();
+    useFrame((state, delta) => {
+        // Add continuous rotation for both axes
+        if(meshRef.current) {
+            meshRef.current.rotation.y += 0.9 * delta;
+            meshRef.current.rotation.x += 0.6 * delta;
+        }
+    });
     return (
-      <mesh rotation={[0.4, 0.7, 0]}>
+      <mesh ref={meshRef}>
         <boxGeometry args={[1.2, 1.2, 1.2]} />
         <meshStandardMaterial
           color="#38bdf8"
           emissive="#0ea5e9"
-          emissiveIntensity={0.7}
-          metalness={0.4}
-          roughness={0.25}
+          emissiveIntensity={0.85}
+          metalness={0.34}
+          roughness={0.18}
         />
       </mesh>
     );
-  }
+}
 
 export default function HeroScene() {
   return (
