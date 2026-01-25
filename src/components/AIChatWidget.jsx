@@ -59,7 +59,7 @@ export default function AIChatWidget() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/chat", {
+      const res = await fetch("https://my-portfolio-hlwy.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),
@@ -140,8 +140,7 @@ export default function AIChatWidget() {
       <motion.button
         onClick={() => setOpen((o) => !o)}
         whileHover={{ scale: 1.08 }}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-sky-500/90 backdrop-blur-md shadow-xl flex items-center justify-center text-white"
-      >
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 rounded-full bg-sky-500 shadow-lg flex items-center justify-center text-white"      >
         {open ? <X /> : <MessageCircle />}
       </motion.button>
 
@@ -163,11 +162,14 @@ export default function AIChatWidget() {
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
             transition={{ duration: 0.25 }}
             className="
-              fixed bottom-24 right-6 z-50 w-96 h-[70vh]
-              bg-white/20 backdrop-blur-2xl
-              rounded-2xl shadow-2xl border border-white/30
-              flex flex-col overflow-hidden
-            "
+            fixed z-50 
+            bottom-0 right-0 
+            w-full h-full 
+            sm:bottom-24 sm:right-6 sm:w-96 sm:h-[70vh]
+            bg-white/80 backdrop-blur-xl
+            rounded-none sm:rounded-2xl
+            shadow-xl border 
+            flex flex-col overflow-hidden "
           >
             {/* 🔥 GLASS HEADER WITH ATLAS BRANDING */}
             <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-500/80 to-blue-600/80 backdrop-blur-xl text-white border-b border-white/20">
