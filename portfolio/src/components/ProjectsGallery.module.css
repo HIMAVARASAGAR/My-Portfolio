@@ -1,0 +1,96 @@
+.section {
+  position: relative;
+  padding: clamp(100px, 20vh, 200px) 0;
+  background: transparent;
+}
+
+.wrapper {
+  will-change: transform, opacity, filter;
+}
+
+.header {
+  margin-bottom: clamp(60px, 15vh, 140px);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.line {
+  width: 60px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.labelText {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(100px, 30vh, 300px); /* Generous spatial flow */
+}
+
+.projectItem {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  will-change: transform, opacity, filter;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 8rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  margin: 0;
+  will-change: transform;
+}
+
+.desc {
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 500px;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .projectItem {
+    text-align: left;
+    margin: 0;
+  }
+}

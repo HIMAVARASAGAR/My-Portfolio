@@ -1,0 +1,107 @@
+.hero {
+  position: relative;
+  height: 120vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 var(--container-pad);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  will-change: transform, opacity, filter;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.line {
+  width: 60px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.labelText {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 15vw, 15rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text-primary);
+  opacity: 0.9;
+}
+
+.dot {
+  color: var(--accent);
+}
+
+.deck {
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin-top: 10px;
+}
+
+.scrollHint {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.scrollText {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+.scrollLine {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: clamp(3.5rem, 18vw, 8rem);
+  }
+}
