@@ -1,14 +1,30 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollContext } from "@/app/page";
 import styles from "./Footer.module.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer() {
   const footerRef = useRef(null);
+  const { masterTimeline } = useContext(ScrollContext);
+
+  useEffect(() => {
+    if (!masterTimeline) return;
+
+    const ctx = gsap.context(() => {
+      const tl = masterTimeline;
+      const start = 0.98;
+
+      tl.fromTo(footerRef.current, 
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.02 },
+        start
+      );
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, [masterTimeline]);
 
   return (
     <footer className={styles.footer} ref={footerRef}>
@@ -17,7 +33,7 @@ export default function Footer() {
           <div className={styles.left}>
             <p className={styles.copy}>© {new Date().getFullYear()} KHS</p>
           </div>
-          
+
           <div className={styles.center}>
             <p className={styles.built}>Built for Excellence</p>
           </div>

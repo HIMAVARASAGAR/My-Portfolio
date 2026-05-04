@@ -1,10 +1,13 @@
 .skills {
-  position: relative;
-  padding: clamp(100px, 20vh, 200px) 0;
-  min-height: 100vh;
+  position: absolute;
+  inset: 0;
+  height: 100vh;
   display: flex;
   align-items: center;
   background: transparent;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .wrapper {
@@ -52,13 +55,15 @@
   gap: clamp(40px, 8vw, 120px);
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
 }
 
 .skillBlock {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  will-change: transform, opacity, filter;
+  position: relative;
+  will-change: transform, opacity;
 }
 
 .groupLabel {

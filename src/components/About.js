@@ -1,85 +1,77 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollContext } from "@/app/page";
 import NorrisText from "./NorrisText";
 import styles from "./About.module.css";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function About() {
-  const containerRef = useRef(null);
+  const sectionRef = useRef(null);
   const textRef = useRef(null);
+  const scanlineRef = useRef(null);
+  const { masterTimeline } = useContext(ScrollContext);
 
   const bio = "I am an Electronics and Communication Engineering graduate from NIT Calicut. My work bridges theory and implementation—from graphene-based THz antenna design to multi-agent AI systems, frontend architecture, and hardware circuits built from first principles.";
 
   useEffect(() => {
+    if (!masterTimeline) return;
+
     const ctx = gsap.context(() => {
-      const words = gsap.utils.toArray(`.${styles.word}`);
+      const tl = masterTimeline;
+      const start = 0.12;
       
-      // Materialize words from the atmosphere
-      gsap.fromTo(words, 
-        { 
-          opacity: 0, 
-          filter: "blur(20px)", 
-          y: 30,
-          scale: 0.9
-        },
-        {
-          opacity: 1,
-          filter: "blur(0px)",
-          y: 0,
-          scale: 1,
-          stagger: 0.08,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: textRef.current,
-            start: "top 85%",
-            end: "bottom 35%",
-            scrub: 1.2,
-          }
-        }
+      const container = sectionRef.current.querySelector('.container');
+
+      // 1. Entrance: Kinetic Slice
+      tl.fromTo(sectionRef.current, 
+        { autoAlpha: 0, clipPath: "inset(100% 0 0 0)" },
+        { autoAlpha: 1, clipPath: "inset(0% 0 0 0)", duration: 0.05, ease: "power4.out" },
+        start
       );
 
-      // Deep parallax and fade out as section leaves
-      gsap.to(containerRef.current, {
-        opacity: 0.2,
+      tl.fromTo(container, 
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.04, ease: "expo.out" },
+        start + 0.01
+      );
+
+      // 2. Stability Hold (0.17 - 0.23)
+
+      // 3. Exit: Upward Slice
+      tl.to(container, {
         y: -100,
-        filter: "blur(15px)",
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "bottom 60%",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-    }, containerRef);
+        opacity: 0,
+        duration: 0.04,
+        ease: "expo.in"
+      }, start + 0.12);
+
+      tl.to(sectionRef.current, {
+        clipPath: "inset(0 0 100% 0)",
+        autoAlpha: 0,
+        duration: 0.04,
+        ease: "power4.in"
+      }, start + 0.12);
+
+    }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [masterTimeline]);
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
-      <section className={styles.about} id="about">
-        <div className="container">
-          <div className={styles.content}>
-            <div className={styles.label}>
-              <span className={styles.line} />
-              <NorrisText text="The Profile" tag="span" className={styles.labelText} />
-            </div>
-
-            <p className={styles.bigText} ref={textRef}>
-              {bio.split(" ").map((word, i) => (
-                <span key={i} className={styles.word}>
-                  {word}{" "}
-                </span>
-              ))}
-            </p>
+    <section ref={sectionRef} className={styles.about} id="about">
+      <div className="container">
+        <div className={styles.content}>
+          <div className={styles.label}>
+            <span className={styles.line} />
+            <NorrisText text="The Profile" tag="span" className={styles.labelText} />
           </div>
+
+          <p className={styles.bigText}>
+            {bio}
+          </p>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

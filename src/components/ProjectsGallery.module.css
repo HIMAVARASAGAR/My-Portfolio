@@ -1,7 +1,14 @@
 .section {
-  position: relative;
-  padding: clamp(100px, 20vh, 200px) 0;
+  position: absolute;
+  inset: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: transparent;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .wrapper {
@@ -44,7 +51,8 @@
   gap: 24px;
   max-width: 900px;
   margin: 0 auto;
-  will-change: transform, opacity, filter;
+  position: relative;
+  will-change: transform, opacity;
 }
 
 .meta {
@@ -71,9 +79,10 @@
 .title {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 8vw, 8rem);
-  font-weight: 800;
+  font-weight: 900;
   line-height: 0.9;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
   color: var(--text-primary);
   margin: 0;
   will-change: transform;
@@ -92,5 +101,8 @@
   .projectItem {
     text-align: left;
     margin: 0;
+  }
+  .list {
+    gap: 60px;
   }
 }

@@ -1,40 +1,46 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollContext } from "@/app/page";
 import NorrisText from "./NorrisText";
 import styles from "./Contact.module.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
+  const { masterTimeline } = useContext(ScrollContext);
 
   useEffect(() => {
+    if (!masterTimeline) return;
+
     const ctx = gsap.context(() => {
-      // Reveal the final destination
-      gsap.fromTo(containerRef.current, 
-        { opacity: 0, filter: "blur(20px)", scale: 0.98 },
+      const tl = masterTimeline;
+      const start = 0.92;
+
+      // Entrance (Explicit fromTo)
+      tl.fromTo(sectionRef.current, 
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.01 },
+        start
+      );
+
+      tl.fromTo(containerRef.current, 
+        { opacity: 0, y: 15 },
         {
           opacity: 1,
-          filter: "blur(0px)",
-          scale: 1,
-          duration: 1.5,
+          y: 0,
+          duration: 0.04,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            end: "center 50%",
-            scrub: 1,
-          }
-        }
+        },
+        start + 0.01
       );
+
+      // Remains visible until end of scroll track
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [masterTimeline]);
 
   return (
     <section className={styles.contact} id="contact" ref={sectionRef}>
@@ -54,7 +60,7 @@ export default function Contact() {
             <a href="mailto:himavarasagar6675@gmail.com" className={styles.mainEmail} data-cursor="xl">
               himavarasagar6675@gmail.com
             </a>
-            
+
             <div className={styles.socials}>
               <a href="https://linkedin.com/in/kakihimavarasagar" target="_blank" rel="noopener noreferrer" className={styles.link} data-cursor="lg">LinkedIn</a>
               <span className={styles.sep}>/</span>

@@ -1,11 +1,17 @@
 .hero {
-  position: relative;
-  height: 120vh;
+  position: absolute;
+  inset: 0;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: transparent;
+  z-index: 10;
+  /* Ensure it is visible by default to prevent "broken" feel if JS lags */
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
 }
 
 .container {
@@ -19,89 +25,80 @@
   will-change: transform, opacity, filter;
 }
 
-.textBlock {
+.nameWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  position: relative;
 }
 
-.label {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.line {
-  width: 60px;
-  height: 1px;
-  background: var(--accent);
-}
-
-.labelText {
+.firstName {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 2vw, 1.2rem);
   text-transform: uppercase;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.8em;
   color: var(--accent);
+  margin-bottom: 20px;
+  opacity: 0.8;
+  will-change: transform, opacity;
 }
 
-.title {
+.lastName {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 15vw, 15rem);
-  font-weight: 800;
-  line-height: 0.8;
-  letter-spacing: -0.05em;
+  font-size: clamp(5rem, 22vw, 22rem);
+  font-weight: 900;
+  line-height: 0.75;
+  letter-spacing: -0.06em;
   color: var(--text-primary);
   margin: 0;
+  position: relative;
+  will-change: transform, opacity, filter;
 }
 
-.outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--text-primary);
-  opacity: 0.9;
-}
-
-.dot {
+.lastName .dot {
   color: var(--accent);
 }
 
-.deck {
+.tagline {
   font-family: var(--font-body);
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
   line-height: 1.5;
   color: var(--text-secondary);
-  max-width: 700px;
-  margin-top: 10px;
+  max-width: 600px;
+  margin-top: clamp(40px, 8vh, 80px);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  will-change: transform, opacity;
 }
 
 .scrollHint {
   position: absolute;
-  bottom: 8vh;
+  bottom: 6vh;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  will-change: transform, opacity;
 }
 
 .scrollText {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.3em;
   color: var(--text-muted);
 }
 
 .scrollLine {
   width: 1px;
-  height: 60px;
+  height: 40px;
   background: linear-gradient(to bottom, var(--accent), transparent);
 }
 
 @media (max-width: 768px) {
-  .title {
-    font-size: clamp(3.5rem, 18vw, 8rem);
-  }
+  .firstName { letter-spacing: 0.4em; }
+  .lastName { font-size: clamp(4rem, 25vw, 12rem); }
 }
