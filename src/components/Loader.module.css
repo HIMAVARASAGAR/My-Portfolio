@@ -1,0 +1,79 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg, #0a0a0f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.greeting {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+}
+
+.counter {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.bar {
+  width: clamp(150px, 30vw, 250px);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Corner registration marks */
+.corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0.15;
+}
+
+.corner::before,
+.corner::after {
+  content: '';
+  position: absolute;
+  background: var(--text-primary);
+}
+
+.tl { top: 24px; left: 24px; }
+.tl::before { top: 0; left: 0; width: 1px; height: 100%; }
+.tl::after { top: 0; left: 0; width: 100%; height: 1px; }
+
+.tr { top: 24px; right: 24px; }
+.tr::before { top: 0; right: 0; width: 1px; height: 100%; }
+.tr::after { top: 0; right: 0; width: 100%; height: 1px; }
+
+.bl { bottom: 24px; left: 24px; }
+.bl::before { bottom: 0; left: 0; width: 1px; height: 100%; }
+.bl::after { bottom: 0; left: 0; width: 100%; height: 1px; }
+
+.br { bottom: 24px; right: 24px; }
+.br::before { bottom: 0; right: 0; width: 1px; height: 100%; }
+.br::after { bottom: 0; right: 0; width: 100%; height: 1px; }

@@ -1,0 +1,131 @@
+.experience {
+  position: relative;
+  padding: clamp(100px, 20vh, 200px) 0;
+  background: transparent;
+}
+
+.wrapper {
+  will-change: transform, opacity, filter;
+}
+
+.header {
+  margin-bottom: clamp(80px, 15vh, 120px);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.line {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.labelText {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(120px, 25vh, 250px);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: clamp(40px, 8vw, 120px);
+  align-items: start;
+  will-change: transform, opacity, filter;
+}
+
+.item:nth-child(even) {
+  direction: rtl;
+}
+
+.item:nth-child(even) > * {
+  direction: ltr;
+}
+
+.item:nth-child(even) .left {
+  text-align: left;
+}
+.item:nth-child(even) .right {
+  text-align: right;
+}
+
+.item:nth-child(odd) .left {
+  text-align: right;
+}
+.item:nth-child(odd) .right {
+  text-align: left;
+}
+
+.period {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.org {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-top: 12px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.desc {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-top: 16px;
+  max-width: 500px;
+  opacity: 0.8;
+}
+
+.item:nth-child(even) .desc {
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .item, .item:nth-child(even) {
+    grid-template-columns: 1fr;
+    direction: ltr;
+    text-align: left;
+    gap: 20px;
+  }
+  .item:nth-child(even) .left,
+  .item:nth-child(even) .right,
+  .item:nth-child(odd) .left,
+  .item:nth-child(odd) .right {
+    text-align: left;
+  }
+  .item:nth-child(even) .desc {
+    margin-left: 0;
+  }
+  .list {
+    gap: 80px;
+  }
+}
