@@ -1,34 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Himavara Sagar — Portfolio
 
-## Getting Started
+Personal engineering portfolio of **Kaki Himavara Sagar**, B.Tech in Electronics & Communication Engineering from the National Institute of Technology Calicut (NIT Calicut, Class of 2025).
 
-First, run the development server:
+## Overview
+
+A modern, tactile, and expressive portfolio built with **Material Design 3 (M3)** principles and a warm editorial aesthetic:
+- **Interactive Project Radar**: Canvas-based systems compass with concentric orbital guides, rotating sweeper beam, and numerical satellites linked to a real-time project inspector.
+- **Deep Bidirectional Integration**: Synchronized state between the hero radar, category filter tabs, and project cards.
+- **Tactile Micro-interactions**: M3 ink ripple physics, 3D perspective card tilt with dynamic specular glare, and expandable technical spec drawers.
+- **Zero-Dependency Core**: Clean semantic HTML5, modern CSS custom properties, and vanilla ES modules (ultra-fast Vite build, lightweight bundle).
+
+## Featured Projects
+
+1. **Tunable Terahertz MIMO Antenna** (B.Tech Major Project · NIT Calicut)
+   - Graphene ring antenna simulated in CST Studio Suite.
+   - Electrostatic chemical potential gating for dynamic beam steering and >20 dB port isolation.
+2. **Multi-Agent Workflow Engine** (Software & AI Systems)
+   - Built on Google's Agent Development Kit (ADK) in Python.
+   - Modular planning, sandboxed tool execution, contextual memory, and state routing.
+3. **Semantic Communication Pipeline** (Network Protocols)
+   - Encodes natural language into compact Semantic Information Unit (SIU) schemas.
+   - Robust intent recovery across lossy socket channels with zero external dependencies.
+4. **Multi-Agent Systems Capstone** (Kaggle & Google ADK)
+   - End-to-end multi-agent coordination evaluated against Kaggle benchmark scenarios.
+
+## Tech Stack
+
+- **Bundler**: Vite
+- **Typography**: Fraunces / Recoleta (Variable Soft-Serif), DM Sans, IBM Plex Mono
+- **Design System**: Material Design 3 (M3 Expressive)
+- **Graphics**: Vanilla HTML5 Canvas (High-DPI 60fps)
+
+## Local Development
 
 ```bash
+cd portfolio
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build for production:
+```bash
+npm run build
+npm run preview
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Contact
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Email**: [himavarasagar6675@gmail.com](mailto:himavarasagar6675@gmail.com)
+- **GitHub**: [github.com/kakihimavarasagar](https://github.com/kakihimavarasagar)
+- **LinkedIn**: [linkedin.com/in/kakihimavarasagar](https://linkedin.com/in/kakihimavarasagar)
+- **Location**: Hyderabad, India

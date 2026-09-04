@@ -1,0 +1,8 @@
+.DS_Store
+.hermes/
+temp-lusion/
+Semantic communication/
+portfolio/node_modules/
+portfolio/dist/
+portfolio/.vite/
+*.log
