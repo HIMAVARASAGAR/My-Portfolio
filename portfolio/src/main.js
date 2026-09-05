@@ -1,16 +1,111 @@
 import '../index.css';
-import { ProjectRadar } from './nexus.js';
+import { WorldScene } from './scene.js';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ═══════════════════════════════════════════════════════════════════
-//  HIMAVARA SAGAR — MAIN COCKPIT CONTROLLER
-//  Gravatar API Integration, Dual Mode Switcher, Custom Dynamic Cursor,
-//  Tactile Web Audio Synthesizer, Slide-Out Architecture Drawer.
+//  HIMAVARA SAGAR — HIGH-VELOCITY 3D COCKPIT CONTROLLER
+//  Three.js Spatial Engine, Lenis Inertia Scroll, GSAP Choreography,
+//  Gravatar API Integration, Dual Mode Switcher, and Slide-Out Drawer.
 // ═══════════════════════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
 
   // ─────────────────────────────────────────────────────────────
-  // 1. TACTILE WEB AUDIO SYNTHESIZER (Awwwards / igloo.inc Touch)
+  // 1. FULL-VIEWPORT 3D WEBGL ENGINE
+  // ─────────────────────────────────────────────────────────────
+  const webglCanvas = document.getElementById('webgl-canvas');
+  let worldScene = null;
+
+  if (webglCanvas) {
+    worldScene = new WorldScene(webglCanvas);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 2. LENIS SMOOTH MOMENTUM SCROLL (igloo.inc / landonorris.com)
+  // ─────────────────────────────────────────────────────────────
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    orientation: 'vertical',
+    gestureOrientation: 'vertical',
+    smoothWheel: true,
+    touchMultiplier: 1.5,
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+
+  // Hook Scroll Progress into 3D Camera Path
+  ScrollTrigger.create({
+    trigger: document.body,
+    start: 'top top',
+    end: 'bottom bottom',
+    onUpdate: (self) => {
+      if (worldScene) {
+        worldScene.updateScrollProgress(self.progress);
+      }
+    }
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. GSAP KINETIC LINE-MASK REVEALS & NUMBER ODOMETERS
+  // ─────────────────────────────────────────────────────────────
+  // A. Masked line typography reveals
+  gsap.utils.toArray('.line-mask').forEach(mask => {
+    const textEl = mask.querySelector('.line-text');
+    if (textEl) {
+      gsap.fromTo(textEl,
+        { yPercent: 110, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1.15,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: mask,
+            start: 'top 92%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    }
+  });
+
+  // B. Rolling Odometer Numbers
+  gsap.utils.toArray('.stat-number').forEach(el => {
+    const target = parseFloat(el.getAttribute('data-target'));
+    const prefix = el.getAttribute('data-prefix') || '';
+    const suffix = el.getAttribute('data-suffix') || '';
+
+    if (!isNaN(target)) {
+      const obj = { val: 0 };
+      gsap.to(obj, {
+        val: target,
+        duration: 2.0,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 90%',
+          toggleActions: 'play none none none'
+        },
+        onUpdate: () => {
+          el.innerText = `${prefix}${Math.round(obj.val)}${suffix}`;
+        }
+      });
+    }
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // 4. TACTILE WEB AUDIO SYNTHESIZER
   // ─────────────────────────────────────────────────────────────
   let audioCtx = null;
   let sfxEnabled = false;
@@ -66,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 2. DUAL MODE SWITCHER (landonorris.com Architecture)
+  // 5. DUAL MODE SWITCHER (landonorris.com Architecture)
   // ─────────────────────────────────────────────────────────────
   const modeButtons = document.querySelectorAll('.mode-btn');
   let currentMode = 'hardware';
@@ -81,8 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.setAttribute('aria-checked', match ? 'true' : 'false');
     });
 
-    if (radar) {
-      radar.setThemeMode(mode);
+    if (worldScene) {
+      worldScene.setThemeMode(mode);
     }
 
     if (sfxEnabled) {
@@ -101,12 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ─────────────────────────────────────────────────────────────
-  // 3. GRAVATAR API INTEGRATION (Live Profile & Verified Matrix)
+  // 6. GRAVATAR API INTEGRATION (Live Profile & Verified Matrix)
   // ─────────────────────────────────────────────────────────────
   const GRAVATAR_HASH = '7484a04b4155780c4ac5b1b3a0520388c302165943dea9206a330fc8e43c57c4';
   const GRAVATAR_JSON_URL = `https://gravatar.com/${GRAVATAR_HASH}.json`;
 
-  // Pre-cached verified Gravatar v3 payload for instant rendering & offline resilience
   const fallbackGravatarData = {
     displayName: 'Himavara Sagar',
     jobTitle: 'Electronics & Communication Engineer',
@@ -144,13 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Populate immediately with high-fidelity verified fallback
   populateGravatarData(fallbackGravatarData, false);
 
-  // Attempt live asynchronous fetch from Gravatar public profile
   fetch(GRAVATAR_JSON_URL, { mode: 'cors' })
     .then(res => {
-      if (!res.ok) throw new Error('Gravatar network response was not ok');
+      if (!res.ok) throw new Error('Gravatar network response not ok');
       return res.json();
     })
     .then(payload => {
@@ -169,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
     .catch(() => {
-      // Graceful fallback to verified pre-cached data
       const statusLabel = document.getElementById('gravatar-status-text');
       if (statusLabel) {
         statusLabel.textContent = 'GRAVATAR VERIFIED IDENTITY [CACHED]';
@@ -177,62 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   // ─────────────────────────────────────────────────────────────
-  // 4. PROJECT RADAR & TELEMETRY INSPECTOR
-  // ─────────────────────────────────────────────────────────────
-  const nexusCanvas = document.getElementById('nexus-canvas');
-  let radar = null;
-
-  const inspNum = document.getElementById('insp-num');
-  const inspTag = document.getElementById('insp-tag');
-  const inspTitle = document.getElementById('insp-title');
-  const inspDesc = document.getElementById('insp-desc');
-  const inspJumpBtn = document.getElementById('insp-jump-btn');
-
-  let currentSelectedNode = null;
-
-  const updateInspector = (node) => {
-    if (!node) return;
-    currentSelectedNode = node;
-
-    if (inspNum) inspNum.textContent = node.num;
-    if (inspTag) inspTag.textContent = node.tag;
-    if (inspTitle) inspTitle.textContent = node.title;
-    if (inspDesc) inspDesc.textContent = node.summary;
-  };
-
-  if (inspJumpBtn) {
-    inspJumpBtn.addEventListener('click', () => {
-      if (!currentSelectedNode) return;
-      const card = document.querySelector(`article[data-num="${currentSelectedNode.id}"]`);
-      if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        card.style.borderColor = 'var(--accent-mode)';
-        setTimeout(() => {
-          card.style.borderColor = '';
-        }, 1200);
-      }
-    });
-  }
-
-  if (nexusCanvas) {
-    radar = new ProjectRadar(nexusCanvas, (node) => updateInspector(node));
-
-    const radarTabs = document.querySelectorAll('.radar-tab-btn');
-    radarTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        initAudio();
-        playBlip(580, 'sine', 0.03, 0.03);
-        radarTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        const filter = tab.getAttribute('data-filter');
-        if (radar) radar.setFilter(filter);
-        syncFilterPills(filter);
-      });
-    });
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // 5. PROJECT MATRIX CATEGORY FILTERS
+  // 7. PROJECT MATRIX FILTERS
   // ─────────────────────────────────────────────────────────────
   const filterPills = document.querySelectorAll('.filter-pill');
   const projectCards = document.querySelectorAll('.project-cockpit-card');
@@ -248,41 +284,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const syncFilterPills = (filter) => {
-    filterPills.forEach(pill => {
-      const match = pill.getAttribute('data-filter') === filter;
-      pill.classList.toggle('active', match);
-      pill.setAttribute('aria-selected', match ? 'true' : 'false');
-    });
-    applyProjectFilter(filter);
-  };
-
   filterPills.forEach(pill => {
     pill.addEventListener('click', () => {
       initAudio();
       playBlip(540, 'sine', 0.03, 0.03);
       const filter = pill.getAttribute('data-filter');
-      syncFilterPills(filter);
 
-      document.querySelectorAll('.radar-tab-btn').forEach(tab => {
-        tab.classList.toggle('active', tab.getAttribute('data-filter') === filter);
+      filterPills.forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-selected', 'false');
       });
-      if (radar) radar.setFilter(filter);
+      pill.classList.add('active');
+      pill.setAttribute('aria-selected', 'true');
+
+      applyProjectFilter(filter);
     });
   });
 
   // ─────────────────────────────────────────────────────────────
-  // 6. 3D CARD MOUSE SPOTLIGHT & TILT
+  // 8. 3D CARD MOUSE SPOTLIGHT & TILT
   // ─────────────────────────────────────────────────────────────
   projectCards.forEach(card => {
-    const cardNum = card.getAttribute('data-num');
-
-    card.addEventListener('mouseenter', () => {
-      if (radar && cardNum) {
-        radar.setActiveNodeById(cardNum);
-      }
-    });
-
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -296,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ─────────────────────────────────────────────────────────────
-  // 7. SLIDE-OUT TECHNICAL ARCHITECTURE DRAWER (igloo.inc pattern)
+  // 9. SLIDE-OUT TECHNICAL ARCHITECTURE DRAWER (igloo.inc pattern)
   // ─────────────────────────────────────────────────────────────
   const techDrawerModal = document.getElementById('tech-drawer-modal');
   const drawerCloseBtn = document.getElementById('drawer-close-btn');
@@ -308,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const drawerProjectSummary = document.getElementById('drawer-project-summary');
   const drawerStatsContainer = document.getElementById('drawer-stats-container');
   const drawerDeepContent = document.getElementById('drawer-deep-content');
+  const drawerFiguresContainer = document.getElementById('drawer-figures-container');
   const drawerPillsContainer = document.getElementById('drawer-pills-container');
 
   const projectSpecsDatabase = {
@@ -315,23 +338,27 @@ document.addEventListener('DOMContentLoaded', () => {
       num: '01',
       tag: 'RF / SUB-TERAHERTZ SIMULATION',
       title: 'Tunable Terahertz MIMO Antenna',
-      summary: 'Numerical modeling and analysis of a reconfigurable graphene ring antenna in CST Studio Suite for ultra-high-bandwidth 6G wireless nodes.',
+      summary: 'Numerical modeling and analysis of a reconfigurable graphene antenna in CST Studio Suite for high-bandwidth 6G wireless communication.',
       stats: [
         { val: '>20 dB', label: 'Port Isolation' },
         { val: 'THz Reg', label: 'Sub-Terahertz' },
         { val: 'Electronic', label: 'Beam Steering' }
       ],
       deepContent: `
-        <p><strong>Electromagnetic Modeling in CST Microwave Studio:</strong> The antenna structure uses a circular graphene patch coupled with an electrostatic gating substrate. By tuning the chemical potential of the graphene layer from 0.0 eV to 0.8 eV, the surface conductivity tensor shifts dynamically, causing the resonance frequency to modulate across the terahertz spectrum without changing physical dimensions.</p>
-        <p><strong>MIMO Array Isolation:</strong> Extended into a 2-element MIMO configuration. Careful optimization of the separation distance and ground-plane electromagnetic bandgap (EBG) structures achieved greater than 20 dB mutual port isolation, preventing signal cross-talk in dense array configurations.</p>
+        <p><strong>CST Microwave Studio Modeling:</strong> The antenna structure utilizes a circular graphene patch on an electrostatic gating substrate. By modulating the chemical potential of the graphene layer from 0.0 eV to 0.8 eV, the surface conductivity tensor shifts dynamically, causing the resonance frequency to modulate across the terahertz spectrum without changing physical dimensions.</p>
+        <p><strong>MIMO Array Isolation:</strong> Extended into a 2-element MIMO configuration. Optimization of the separation distance and ground-plane electromagnetic bandgap (EBG) structures achieved greater than 20 dB mutual port isolation, preventing signal cross-talk in dense array configurations.</p>
       `,
+      figures: [
+        { src: './assets/research/architecture_comparison_overall.png', caption: 'Electromagnetic Field Directivity' },
+        { src: './assets/research/symbol_heatmap.png', caption: 'S-Parameter Isolation Matrix' }
+      ],
       pills: ['CST Studio Suite', 'S-Parameters', 'Surface Conductivity', 'Graphene Chemical Potential', 'MIMO Isolation', 'Sub-THz Waves']
     },
     '02': {
       num: '02',
       tag: 'SOFTWARE / MULTI-AGENT RUNTIME',
       title: 'Multi-Agent Workflow Engine',
-      summary: 'Autonomous orchestration engine built with Google Agent Development Kit featuring modular reasoning, dynamic tool use, and stateful graph recovery.',
+      summary: 'Autonomous orchestration framework built with Google Agent Development Kit featuring modular reasoning, dynamic tool use, and stateful graph recovery.',
       stats: [
         { val: 'Google ADK', label: 'Agent Toolkit' },
         { val: 'Python 3.11', label: 'Core Runtime' },
@@ -339,8 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       deepContent: `
         <p><strong>Planner-Executor Architecture:</strong> Built on top of Google ADK in Python. The system utilizes a root decomposition agent that transforms abstract user commands into structured execution trees. Individual sub-agents specialize in sandboxed code execution, file manipulation, and web retrieval.</p>
-        <p><strong>State & Memory Management:</strong> Implements a resilient memory graph where tool outputs are validated against schema boundaries before mutating global state. If a tool invocation encounters an exception or timeout, the engine dynamically recalibrates its plan or delegates to fallback strategies.</p>
+        <p><strong>State & Memory Management:</strong> Implements a resilient memory graph where tool outputs are validated against schema boundaries before mutating global state. If a tool invocation encounters an exception or timeout, the engine dynamically recalibrates its plan.</p>
       `,
+      figures: [
+        { src: './assets/research/architecture_comparison_categories.png', caption: 'Agent Execution Latency Distribution' },
+        { src: './assets/research/precision_comparison_overall.png', caption: 'Task Precision vs Baseline' }
+      ],
       pills: ['Google ADK', 'Python 3.11', 'Multi-Agent Systems', 'Tool Invocation', 'Directed Graphs', 'State Preservation']
     },
     '03': {
@@ -355,8 +386,12 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       deepContent: `
         <p><strong>Semantic Information Units (SIU):</strong> Instead of transmitting plain text strings or serialized JSON, natural language statements are parsed into minimal intent tokens and semantic tuples (Subject-Predicate-Object). This achieves high structural compression prior to dictionary encoding.</p>
-        <p><strong>Lossy Socket Transmission:</strong> Messages are compressed with zlib and transmitted over raw TCP/UDP sockets with simulated burst packet loss and random bit-flips. The receiver uses rule-based semantic inference to reconstruct the message meaning even when packets arrive corrupted.</p>
+        <p><strong>Lossy Socket Transmission:</strong> Messages are compressed with zlib and transmitted over raw TCP/UDP sockets with simulated burst packet loss and random bit-flips. The receiver uses rule-based semantic inference to reconstruct meaning even with packet corruption.</p>
       `,
+      figures: [
+        { src: './assets/research/meaning_vs_symbol.png', caption: 'Empirical Meaning vs Symbol Transmission' },
+        { src: './assets/research/bandwidth_by_category.png', caption: 'Bandwidth Reduction Across Categories' }
+      ],
       pills: ['Python Stdlib', 'Raw Sockets', 'zlib Compression', 'Lossy Channels', 'SIU Schema', 'Error Recovery']
     },
     '04': {
@@ -373,6 +408,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <p><strong>Adversarial Benchmark Testing:</strong> Tested multi-agent orchestration patterns against challenging test cases involving circular delegation, failing API endpoints, and ambiguous tool parameters. The system demonstrated 100% resolution rate across automated grading rubrics.</p>
         <p><strong>Delegation Chaining:</strong> Implemented strict scope boundaries between primary planners and specialized worker agents to eliminate hallucination loops and ensure verifiable audit trails.</p>
       `,
+      figures: [
+        { src: './assets/research/precision_comparison_categories.png', caption: 'Category Precision Benchmark Score' },
+        { src: './assets/research/symbol_heatmap.png', caption: 'State Alignment Heatmap' }
+      ],
       pills: ['Google ADK', 'Kaggle Capstone', 'Delegation Patterns', 'Adversarial Testing', 'Evaluation Rubrics']
     }
   };
@@ -396,6 +435,15 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
+    if (drawerFiguresContainer && data.figures) {
+      drawerFiguresContainer.innerHTML = data.figures.map(fig => `
+        <div class="figure-item">
+          <img src="${fig.src}" alt="${fig.caption}" class="drawer-plot-img" loading="lazy" />
+          <span class="m-tag" style="display:block; margin-top:0.3rem;">${fig.caption}</span>
+        </div>
+      `).join('');
+    }
+
     if (drawerPillsContainer) {
       drawerPillsContainer.innerHTML = data.pills.map(p => `
         <span class="tpill">${p}</span>
@@ -404,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     techDrawerModal.classList.add('active');
     techDrawerModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    lenis.stop();
 
     if (sfxEnabled) {
       playBlip(700, 'sine', 0.05, 0.04);
@@ -414,16 +462,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeDrawer = () => {
     techDrawerModal.classList.remove('active');
     techDrawerModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    lenis.start();
+
     if (sfxEnabled) {
       playBlip(400, 'sine', 0.04, 0.03);
     }
   };
 
-  document.querySelectorAll('.inspect-drawer-trigger').forEach(trigger => {
-    trigger.addEventListener('click', () => {
+  document.querySelectorAll('.inspect-drawer-trigger, .project-cockpit-card').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      // Don't trigger drawer if clicking internal links
+      if (e.target.closest('a')) return;
+
       initAudio();
-      const inspectId = trigger.getAttribute('data-inspect');
+      const inspectId = trigger.getAttribute('data-inspect') || trigger.getAttribute('data-id');
       if (inspectId) openDrawer(inspectId);
     });
   });
@@ -438,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ─────────────────────────────────────────────────────────────
-  // 8. DYNAMIC CUSTOM CURSOR & MAGNETIC SNAPPING
+  // 10. DYNAMIC CUSTOM RETICLE CURSOR
   // ─────────────────────────────────────────────────────────────
   const cursorEl = document.getElementById('custom-cursor');
   const cursorLabel = document.getElementById('cursor-label');
@@ -471,7 +523,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     target.addEventListener('mousemove', (e) => {
-      // Gentle magnetic pull
       const rect = target.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -497,13 +548,12 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCursor();
 
   // ─────────────────────────────────────────────────────────────
-  // 9. LIVE HYDERABAD IST CLOCK
+  // 11. LIVE HYDERABAD IST CLOCK
   // ─────────────────────────────────────────────────────────────
   const liveClockEl = document.getElementById('live-ist-clock');
   const updateClock = () => {
     if (!liveClockEl) return;
     const now = new Date();
-    // Format in IST (UTC+5:30)
     const options = {
       timeZone: 'Asia/Kolkata',
       hour12: false,
@@ -517,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateClock();
 
   // ─────────────────────────────────────────────────────────────
-  // 10. OSCILLOSCOPE WAVEFORM MODULATION
+  // 12. OSCILLOSCOPE WAVEFORM MODULATION
   // ─────────────────────────────────────────────────────────────
   const labRows = document.querySelectorAll('.lab-telemetry-row');
   const scopeFreqReadout = document.getElementById('scope-freq-readout');
@@ -552,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ─────────────────────────────────────────────────────────────
-  // 11. CLICK TO COPY EMAIL WITH HUD TOAST
+  // 13. CLICK TO COPY EMAIL WITH HUD TOAST
   // ─────────────────────────────────────────────────────────────
   const copyEmailBtn = document.getElementById('copy-email-btn');
   const hudToast = document.getElementById('hud-toast');
@@ -588,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 12. SMOOTH SCROLLING FOR ANCHOR LINKS
+  // 14. SMOOTH SCROLL ANCHOR NAVIGATION (Via Lenis)
   // ─────────────────────────────────────────────────────────────
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
@@ -600,31 +650,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         initAudio();
         if (sfxEnabled) playBlip(480, 'sine', 0.03, 0.03);
-        targetEl.scrollIntoView({ behavior: 'smooth' });
+        lenis.scrollTo(targetEl, { offset: -60, duration: 1.2 });
       }
     });
   });
-
-  // ─────────────────────────────────────────────────────────────
-  // 13. SCROLL REVEALS (IntersectionObserver)
-  // ─────────────────────────────────────────────────────────────
-  const revealItems = document.querySelectorAll('.reveal-item');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -40px 0px'
-    });
-
-    revealItems.forEach(item => observer.observe(item));
-  } else {
-    revealItems.forEach(item => item.classList.add('revealed'));
-  }
 
 });
