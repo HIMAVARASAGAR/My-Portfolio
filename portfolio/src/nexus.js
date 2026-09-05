@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
-//  INTERACTIVE PROJECT RADAR — Systems & Discipline Compass
-//  High-DPI Canvas with smooth physics, zero text clipping,
-//  and deep bidirectional integration with page projects.
+//  COCKPIT VISUALIZER // PROJECT RADAR v2.5
+//  Inspired by igloo.inc WebGL atmospheric depth & landonorris.com telemetry
+//  High-DPI 60fps Canvas with orbital guides, dynamic mode color shifts,
+//  curl noise particle synthesis, and bidirectional project syncing.
 // ═══════════════════════════════════════════════════════════════════
 
 export class ProjectRadar {
@@ -16,72 +17,89 @@ export class ProjectRadar {
     
     this.mouse = { x: 0, y: 0, targetX: 0, targetY: 0, isHovered: false };
     this.time = 0;
-    this.activeNodeIndex = 0; // Currently focused project
-    this.filterMode = 'all';  // 'all', 'rf', 'ai', 'comm'
+    this.activeNodeIndex = 0;
+    this.filterMode = 'all';
+    this.currentMode = document.documentElement.getAttribute('data-mode') || 'hardware';
 
-    // 4 Core Projects — Clean data without jargon overload
+    // Theme Accent Colors
+    this.themeColors = {
+      hardware: {
+        primary: '#D2FF00',
+        glow: 'rgba(210, 255, 0, 0.4)',
+        dim: 'rgba(210, 255, 0, 0.12)',
+        ring: 'rgba(255, 255, 255, 0.08)'
+      },
+      software: {
+        primary: '#00F2FE',
+        glow: 'rgba(0, 242, 254, 0.4)',
+        dim: 'rgba(0, 242, 254, 0.12)',
+        ring: 'rgba(255, 255, 255, 0.08)'
+      }
+    };
+
+    // 4 Flagship Engineering Projects
     this.nodes = [
       {
         id: 'P01',
         num: '01',
         title: 'Tunable Terahertz MIMO Antenna',
         category: 'Antenna & RF Simulation',
-        tag: 'RF / Major Project',
-        summary: 'Graphene ring antenna in CST Studio achieving >20 dB port isolation and electronic beam steering.',
+        tag: 'RF / B.TECH MAJOR PROJECT',
+        summary: 'Graphene ring antenna simulated in CST Studio achieving >20 dB port isolation and electrostatic beam steering.',
         discipline: 'rf',
-        angle: 0.25,
+        angle: 0.35,
         dist: 0.68,
-        color: '#C45A3C',
       },
       {
         id: 'P02',
         num: '02',
         title: 'Multi-Agent Workflow Engine',
         category: 'Software & AI Systems',
-        tag: 'Google ADK / Python',
-        summary: 'Cooperative agent architecture with modular planning, sandboxed tool execution, and state routing.',
+        tag: 'GOOGLE AGENT DEV KIT / PYTHON',
+        summary: 'Cooperative multi-agent engine with modular planning, dynamic tool invocation, and self-healing recovery.',
         discipline: 'ai',
-        angle: 1.75,
+        angle: 1.85,
         dist: 0.62,
-        color: '#B34A2E',
       },
       {
         id: 'P03',
         num: '03',
         title: 'Semantic Communication Pipeline',
         category: 'Network Protocols',
-        tag: 'Python Stdlib / Sockets',
-        summary: 'Transmits structured semantic intent over noisy socket channels with zero external dependencies.',
+        tag: 'PYTHON STDLIB / RAW SOCKETS',
+        summary: 'Transmits structured semantic intent over noisy socket channels with 68% payload compression.',
         discipline: 'comm',
-        angle: 3.25,
+        angle: 3.35,
         dist: 0.72,
-        color: '#D97356',
       },
       {
         id: 'P04',
         num: '04',
         title: 'Multi-Agent Systems Capstone',
         category: 'Certification & Benchmarks',
-        tag: 'Kaggle / Google ADK',
-        summary: 'End-to-end multi-agent design tested against Kaggle benchmark cases for error handling and delegation.',
+        tag: 'KAGGLE / GOOGLE ADK INTENSIVE',
+        summary: 'End-to-end multi-agent system tested against benchmark scenarios for inter-agent delegation.',
         discipline: 'ai',
-        angle: 4.80,
-        dist: 0.60,
-        color: '#C45A3C',
+        angle: 4.85,
+        dist: 0.64,
       },
     ];
 
-    // Subtle data pulse particles flowing along orbital paths
+    // Atmospheric Micro-Particles (igloo.inc Curl/Orbital field)
     this.particles = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 28; i++) {
       this.particles.push({
-        angle: Math.random() * Math.PI * 2,
-        radiusIndex: Math.floor(Math.random() * 3) + 1,
-        speed: (Math.random() * 0.008 + 0.004) * (Math.random() > 0.5 ? 1 : -1),
-        size: Math.random() * 2 + 1.5,
-        opacity: Math.random() * 0.5 + 0.3,
+        x: (Math.random() - 0.5) * 320,
+        y: (Math.random() - 0.5) * 320,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        size: Math.random() * 2 + 1,
+        alpha: Math.random() * 0.6 + 0.2,
       });
     }
+
+    // Shockwave click ripple queue
+    this.ripples = [];
 
     this.init();
   }
@@ -99,271 +117,287 @@ export class ProjectRadar {
       this.mouse.targetX = rawX;
       this.mouse.targetY = rawY;
       this.mouse.isHovered = true;
-
-      // Check node hover
-      this.checkHover(e.clientX - rect.left, e.clientY - rect.top);
     });
 
     container.addEventListener('mouseleave', () => {
       this.mouse.targetX = 0;
       this.mouse.targetY = 0;
       this.mouse.isHovered = false;
-      this.canvas.style.cursor = 'default';
     });
 
-    // Click handler for nodes
+    // Click on node or trigger shockwave ripple
     this.canvas.addEventListener('click', (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-      this.handleCanvasClick(clickX, clickY);
+      const clickX = e.clientX - rect.left - rect.width / 2;
+      const clickY = e.clientY - rect.top - rect.height / 2;
+
+      this.ripples.push({
+        x: clickX,
+        y: clickY,
+        r: 5,
+        maxR: 120,
+        alpha: 0.8
+      });
+
+      const clickedNode = this.hitTest(clickX, clickY);
+      if (clickedNode) {
+        const idx = this.nodes.findIndex(n => n.id === clickedNode.id);
+        if (idx !== -1) {
+          this.setActiveNodeIndex(idx);
+        }
+      }
     });
 
-    // Initial trigger
-    this.onNodeSelect(this.nodes[this.activeNodeIndex]);
-    this.animate();
+    // Notify initial node
+    if (this.nodes.length > 0) {
+      this.onNodeSelect(this.nodes[0]);
+    }
+
+    this.render();
+  }
+
+  setThemeMode(mode) {
+    if (this.themeColors[mode]) {
+      this.currentMode = mode;
+    }
+  }
+
+  resize() {
+    const rect = this.canvas.getBoundingClientRect();
+    this.width = rect.width;
+    this.height = rect.height;
+
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.ctx.scale(this.dpr, this.dpr);
+  }
+
+  setFilter(filter) {
+    this.filterMode = filter;
   }
 
   setActiveNodeById(id) {
     const idx = this.nodes.findIndex(n => n.id === id);
     if (idx !== -1) {
-      this.activeNodeIndex = idx;
+      this.setActiveNodeIndex(idx);
+    }
+  }
+
+  setActiveNodeIndex(idx) {
+    this.activeNodeIndex = idx;
+    if (this.nodes[idx]) {
       this.onNodeSelect(this.nodes[idx]);
     }
   }
 
-  setFilter(filter) {
-    this.filterMode = filter;
-    // If current node doesn't match filter, select first matching
-    if (filter !== 'all') {
-      const match = this.nodes.findIndex(n => n.discipline === filter);
-      if (match !== -1) {
-        this.activeNodeIndex = match;
-        this.onNodeSelect(this.nodes[match]);
-      }
-    }
-  }
+  hitTest(x, y) {
+    const baseR = Math.min(this.width, this.height) * 0.44;
+    const currentTheme = this.themeColors[this.currentMode];
 
-  resize() {
-    const rect = this.canvas.parentElement.getBoundingClientRect();
-    this.width = rect.width || 420;
-    this.height = Math.min(this.width, 380);
-    this.canvas.width = this.width * this.dpr;
-    this.canvas.height = this.height * this.dpr;
-    this.canvas.style.width = `${this.width}px`;
-    this.canvas.style.height = `${this.height}px`;
-    this.ctx.scale(this.dpr, this.dpr);
-  }
-
-  checkHover(mouseX, mouseY) {
-    const w = this.width;
-    const h = this.height;
-    const cx = w / 2 + this.mouse.x * 0.05;
-    const cy = h / 2 + this.mouse.y * 0.05;
-    const radius = Math.min(w, h) * 0.40;
-
-    let hoveredAny = false;
-    this.nodes.forEach((node, idx) => {
-      const angle = node.angle + this.time * 0.12;
-      const nx = cx + Math.cos(angle) * (radius * node.dist);
-      const ny = cy + Math.sin(angle) * (radius * node.dist);
-      const dist = Math.hypot(mouseX - nx, mouseY - ny);
+    for (let node of this.nodes) {
+      if (this.filterMode !== 'all' && node.discipline !== this.filterMode) continue;
+      
+      const nodeX = Math.cos(node.angle) * (baseR * node.dist) + this.mouse.x * 0.15;
+      const nodeY = Math.sin(node.angle) * (baseR * node.dist) + this.mouse.y * 0.15;
+      const dist = Math.hypot(x - nodeX, y - nodeY);
 
       if (dist < 26) {
-        hoveredAny = true;
-        this.canvas.style.cursor = 'pointer';
-        if (this.activeNodeIndex !== idx) {
-          this.activeNodeIndex = idx;
-          this.onNodeSelect(this.nodes[idx]);
-        }
+        return node;
       }
-    });
-
-    if (!hoveredAny) {
-      this.canvas.style.cursor = 'default';
     }
+    return null;
   }
 
-  handleCanvasClick(clickX, clickY) {
-    const w = this.width;
-    const h = this.height;
-    const cx = w / 2 + this.mouse.x * 0.05;
-    const cy = h / 2 + this.mouse.y * 0.05;
-    const radius = Math.min(w, h) * 0.40;
+  render() {
+    this.time += 0.016;
 
-    this.nodes.forEach((node, idx) => {
-      const angle = node.angle + this.time * 0.12;
-      const nx = cx + Math.cos(angle) * (radius * node.dist);
-      const ny = cy + Math.sin(angle) * (radius * node.dist);
-      const dist = Math.hypot(clickX - nx, clickY - ny);
-
-      if (dist < 26) {
-        this.activeNodeIndex = idx;
-        this.onNodeSelect(this.nodes[idx]);
-
-        // Smooth scroll to the corresponding project card
-        const card = document.querySelector(`article[data-num="${node.id}"]`);
-        if (card) {
-          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          card.classList.add('flash-highlight');
-          setTimeout(() => card.classList.remove('flash-highlight'), 1200);
-        }
-      }
-    });
-  }
-
-  animate() {
-    requestAnimationFrame(() => this.animate());
-
-    this.time += 0.012;
+    // Smooth Mouse Spring Physics
     this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.08;
     this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.08;
 
-    this.draw();
-  }
-
-  draw() {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
-    const cx = w / 2 + this.mouse.x * 0.05;
-    const cy = h / 2 + this.mouse.y * 0.05;
-    const radius = Math.min(w, h) * 0.40;
+    const cx = w / 2;
+    const cy = h / 2;
+    const maxR = Math.min(w, h) * 0.44;
+
+    const theme = this.themeColors[this.currentMode] || this.themeColors.hardware;
 
     ctx.clearRect(0, 0, w, h);
 
-    // 1. Concentric Guide Orbits
-    const ringSteps = [0.35, 0.65, 0.95];
-    ringSteps.forEach((step, i) => {
-      const r = radius * step;
-      ctx.save();
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // 1. Concentric Telemetry Orbital Rings
+    const ringRadii = [maxR * 0.35, maxR * 0.65, maxR * 0.95];
+    ctx.lineWidth = 1;
+
+    ringRadii.forEach((r, idx) => {
       ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.strokeStyle = i === 1 ? 'rgba(196, 90, 60, 0.22)' : 'rgba(217, 210, 201, 0.65)';
-      ctx.lineWidth = i === 1 ? 1.5 : 1;
-      if (i !== 1) {
-        ctx.setLineDash([4, 6]);
-      }
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.strokeStyle = idx === 1 ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.04)';
       ctx.stroke();
-      ctx.restore();
+
+      // Outer ring ticks
+      if (idx === 2) {
+        const tickCount = 48;
+        for (let i = 0; i < tickCount; i++) {
+          const theta = (i / tickCount) * Math.PI * 2;
+          const tickLen = i % 12 === 0 ? 8 : (i % 6 === 0 ? 5 : 2.5);
+          const x1 = Math.cos(theta) * (r - tickLen);
+          const y1 = Math.sin(theta) * (r - tickLen);
+          const x2 = Math.cos(theta) * r;
+          const y2 = Math.sin(theta) * r;
+
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = i % 12 === 0 ? theme.primary : 'rgba(255, 255, 255, 0.12)';
+          ctx.stroke();
+        }
+      }
     });
 
-    // 2. Rotating Sweeper Beam (Radar line)
-    ctx.save();
-    const beamAngle = this.time * 0.6;
-    const beamLen = radius * 1.02;
-
-    const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, beamLen);
-    grad.addColorStop(0, 'rgba(196, 90, 60, 0.18)');
-    grad.addColorStop(0.7, 'rgba(232, 146, 122, 0.04)');
-    grad.addColorStop(1, 'rgba(196, 90, 60, 0)');
-
+    // 2. Crosshair Telemetry Axes
     ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, beamLen, beamAngle - 0.25, beamAngle + 0.25);
+    ctx.moveTo(-maxR, 0);
+    ctx.lineTo(maxR, 0);
+    ctx.moveTo(0, -maxR);
+    ctx.lineTo(0, maxR);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+    ctx.setLineDash([4, 6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 3. Rotating Sweeping Radar Beam (High-Velocity Aesthetic)
+    const sweepAngle = this.time * 0.95;
+    const sweepGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, maxR);
+    sweepGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    sweepGradient.addColorStop(1, theme.dim);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, maxR, sweepAngle - 0.4, sweepAngle);
     ctx.closePath();
-    ctx.fillStyle = grad;
+    ctx.fillStyle = sweepGradient;
     ctx.fill();
 
-    // Beam sweep line
+    // Leading crisp laser sweep line
     ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + Math.cos(beamAngle) * beamLen, cy + Math.sin(beamAngle) * beamLen);
-    ctx.strokeStyle = 'rgba(196, 90, 60, 0.4)';
-    ctx.lineWidth = 1.2;
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.cos(sweepAngle) * maxR, Math.sin(sweepAngle) * maxR);
+    ctx.strokeStyle = theme.primary;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = theme.primary;
+    ctx.shadowBlur = 10;
     ctx.stroke();
+    ctx.shadowBlur = 0;
     ctx.restore();
 
-    // 3. Ambient Signal Particles
-    ctx.save();
+    // 4. Ambient Micro-Particles with gentle velocity
     this.particles.forEach(p => {
-      p.angle += p.speed;
-      const r = radius * ringSteps[p.radiusIndex - 1];
-      const px = cx + Math.cos(p.angle) * r;
-      const py = cy + Math.sin(p.angle) * r;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Wrap around bounds
+      if (p.x < -maxR) p.x = maxR;
+      if (p.x > maxR) p.x = -maxR;
+      if (p.y < -maxR) p.y = maxR;
+      if (p.y > maxR) p.y = -maxR;
 
       ctx.beginPath();
-      ctx.arc(px, py, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(196, 90, 60, ${p.opacity})`;
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.5})`;
       ctx.fill();
     });
-    ctx.restore();
 
-    // 4. Central Compass Hub
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, 16, 0, Math.PI * 2);
-    ctx.fillStyle = '#FAF6F1';
-    ctx.strokeStyle = '#C45A3C';
-    ctx.lineWidth = 2;
-    ctx.fill();
-    ctx.stroke();
+    // 5. Ripple shockwaves
+    for (let i = this.ripples.length - 1; i >= 0; i--) {
+      const rip = this.ripples[i];
+      rip.r += 2.5;
+      rip.alpha *= 0.94;
 
-    ctx.beginPath();
-    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-    ctx.fillStyle = '#C45A3C';
-    ctx.fill();
-    ctx.restore();
-
-    // 5. Connect Active Node to Center with subtle dashed line
-    const activeNode = this.nodes[this.activeNodeIndex];
-    if (activeNode) {
-      const aAngle = activeNode.angle + this.time * 0.12;
-      const ax = cx + Math.cos(aAngle) * (radius * activeNode.dist);
-      const ay = cy + Math.sin(aAngle) * (radius * activeNode.dist);
-
-      ctx.save();
       ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(ax, ay);
-      ctx.strokeStyle = 'rgba(196, 90, 60, 0.55)';
+      ctx.arc(rip.x, rip.y, rip.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${this.currentMode === 'hardware' ? '210, 255, 0' : '0, 242, 254'}, ${rip.alpha})`;
       ctx.lineWidth = 1.5;
-      ctx.setLineDash([3, 4]);
       ctx.stroke();
-      ctx.restore();
+
+      if (rip.alpha < 0.02 || rip.r > rip.maxR) {
+        this.ripples.splice(i, 1);
+      }
     }
 
-    // 6. Render 4 Project Satellites (Clean, numerical, ZERO text clipping)
+    // 6. Interactive Satellite Nodes (01, 02, 03, 04)
     this.nodes.forEach((node, idx) => {
-      const angle = node.angle + this.time * 0.12;
-      const nx = cx + Math.cos(angle) * (radius * node.dist);
-      const ny = cy + Math.sin(angle) * (radius * node.dist);
+      const isFiltered = this.filterMode !== 'all' && node.discipline !== this.filterMode;
       const isActive = idx === this.activeNodeIndex;
-      const isDimmed = this.filterMode !== 'all' && node.discipline !== this.filterMode;
+
+      // Mouse parallax shift
+      const nx = Math.cos(node.angle) * (maxR * node.dist) + this.mouse.x * 0.12;
+      const ny = Math.sin(node.angle) * (maxR * node.dist) + this.mouse.y * 0.12;
 
       ctx.save();
-      ctx.globalAlpha = isDimmed ? 0.35 : 1;
+      ctx.globalAlpha = isFiltered ? 0.2 : 1.0;
 
-      // Outer focus ring if active
+      // Connecting line to center
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(nx, ny);
+      ctx.strokeStyle = isActive ? theme.primary : 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = isActive ? 1.5 : 1;
+      ctx.stroke();
+
+      // Outer glowing halo on active node
       if (isActive) {
-        const pulse = Math.sin(this.time * 4) * 3;
+        const pulseR = 24 + Math.sin(this.time * 4) * 3;
         ctx.beginPath();
-        ctx.arc(nx, ny, 22 + pulse, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(196, 90, 60, 0.4)';
+        ctx.arc(nx, ny, pulseR, 0, Math.PI * 2);
+        ctx.fillStyle = theme.dim;
+        ctx.fill();
+        ctx.strokeStyle = theme.primary;
         ctx.lineWidth = 1.5;
         ctx.stroke();
       }
 
-      // Satellite circle container
+      // Main Node Disk
       ctx.beginPath();
       ctx.arc(nx, ny, 16, 0, Math.PI * 2);
-      ctx.fillStyle = isActive ? '#C45A3C' : '#FFFFFF';
-      ctx.strokeStyle = '#C45A3C';
-      ctx.lineWidth = 2;
-      ctx.shadowColor = 'rgba(196, 90, 60, 0.15)';
-      ctx.shadowBlur = 8;
+      ctx.fillStyle = isActive ? theme.primary : '#12151E';
       ctx.fill();
+      ctx.strokeStyle = isActive ? '#FFFFFF' : 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Number inside circle (Never clips because it's centered in the 32px circle!)
-      ctx.shadowColor = 'transparent';
-      ctx.font = '700 11px "IBM Plex Mono", monospace';
-      ctx.fillStyle = isActive ? '#FFFFFF' : '#C45A3C';
+      // Node Number Label Centered
+      ctx.font = '700 10px "IBM Plex Mono", monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      ctx.fillStyle = isActive ? '#08090C' : '#F4F5F8';
       ctx.fillText(node.num, nx, ny);
 
       ctx.restore();
     });
+
+    // 7. Center Origin Telemetry Core
+    ctx.beginPath();
+    ctx.arc(0, 0, 5, 0, Math.PI * 2);
+    ctx.fillStyle = theme.primary;
+    ctx.shadowColor = theme.primary;
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.beginPath();
+    ctx.arc(0, 0, 11, 0, Math.PI * 2);
+    ctx.strokeStyle = theme.dim;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.restore();
+
+    requestAnimationFrame(() => this.render());
   }
 }
