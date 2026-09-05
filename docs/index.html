@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Himavara Sagar — Electronics & Communication Engineer</title>
+  <meta name="description" content="Portfolio of Kaki Himavara Sagar — B.Tech ECE graduate from NIT Calicut (2025). Antenna design, multi-agent AI systems, and communication protocols.">
+
+  <!-- Fonts: Fraunces (Recoleta-style soft-serif) + DM Sans + IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <script type="module" crossorigin src="./assets/index-OJQMSUh6.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-ef0fyD67.css">
+</head>
+<body>
+
+  <!-- ═══════════════════ TOP NAVIGATION ═══════════════════ -->
+  <header class="site-header">
+    <nav class="site-nav">
+      <a href="#" class="site-nav__logo" aria-label="Himavara Sagar Home">
+        <span class="logo-initials">HS</span>
+        <span class="logo-dot"></span>
+      </a>
+
+      <div class="site-nav__center-chip">
+        <span class="pulse-indicator"></span>
+        <span class="chip-label">Available for 2026 Roles</span>
+      </div>
+
+      <div class="site-nav__links">
+        <a href="#about">About</a>
+        <a href="#work">Projects</a>
+        <a href="#lab">Hardware Lab</a>
+        <a href="#contact" class="nav-contact-btn">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ═══════════════════ HERO SECTION ═══════════════════ -->
+    <section id="hero" class="hero">
+      <div class="hero__grid">
+        
+        <!-- Left: Hero Text & Pitch -->
+        <div class="hero__content">
+          <div class="hero__badge">
+            <span class="badge-dot"></span>
+            <span>NIT Calicut · Class of 2025 · Hyderabad, India</span>
+          </div>
+
+          <h1 class="hero__name">
+            <span class="hero__name-line">Himavara</span>
+            <span class="hero__name-line">Sagar<span class="hero__accent-dot">.</span></span>
+          </h1>
+
+          <p class="hero__subtitle">
+            Electronics &amp; Communication Engineer <span class="sep">/</span> Systems Builder
+          </p>
+
+          <p class="hero__description">
+            I graduated from <strong>NIT Calicut</strong> with a passion for building across hardware and software. 
+            My work ranges from simulated <strong>terahertz antenna arrays</strong> that steer beams electronically, 
+            to <strong>multi-agent Python systems</strong> using Google ADK, and protocol-level communication experiments.
+          </p>
+
+          <!-- Core Discipline Chips -->
+          <div class="hero__chips">
+            <span class="assist-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+              Antenna &amp; RF Design
+            </span>
+            <span class="assist-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/><path d="M9 1v2M15 1v2M9 21v2M15 21v2M1 9h2M1 15h2M21 9h2M21 15h2"/></svg>
+              Multi-Agent Software
+            </span>
+            <span class="assist-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 6 18 3-9h4"/></svg>
+              Communication Protocols
+            </span>
+          </div>
+
+          <!-- Hero Action Buttons -->
+          <div class="hero__actions">
+            <a href="#work" class="btn btn--primary ripple-trigger">
+              <span>View Selected Projects</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#contact" class="btn btn--tonal ripple-trigger">
+              <span>Get in Touch</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Integrated Project Radar & Inspector Card -->
+        <div class="hero__nexus-wrapper">
+          <div class="radar-card">
+            
+            <div class="radar-card__header">
+              <div class="radar-title-group">
+                <span class="status-live-dot"></span>
+                <span class="radar-title">PROJECT RADAR</span>
+              </div>
+              <div class="radar-filter-tabs">
+                <button class="radar-tab active" data-filter="all">All</button>
+                <button class="radar-tab" data-filter="rf">RF</button>
+                <button class="radar-tab" data-filter="ai">Software</button>
+                <button class="radar-tab" data-filter="comm">Comms</button>
+              </div>
+            </div>
+
+            <!-- Canvas Radar Stage -->
+            <div class="radar-canvas-stage">
+              <canvas id="nexus-canvas"></canvas>
+            </div>
+
+            <!-- Integrated HTML Inspector Pane (Zero clipping, full detail) -->
+            <div class="radar-inspector" id="radar-inspector">
+              <div class="inspector-top">
+                <div class="inspector-meta">
+                  <span class="inspector-num" id="insp-num">01</span>
+                  <span class="inspector-tag" id="insp-tag">RF / Major Project</span>
+                </div>
+                <button class="inspector-jump-btn" id="insp-jump-btn" title="Scroll to project details">
+                  <span>View Details</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <h4 class="inspector-title" id="insp-title">Tunable Terahertz MIMO Antenna</h4>
+              <p class="inspector-desc" id="insp-desc">Graphene ring antenna in CST Studio achieving >20 dB port isolation and electronic beam steering.</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ KINETIC MARQUEE ═══════════════════ -->
+    <div class="marquee-strip" aria-hidden="true">
+      <div class="marquee-track">
+        <span>NIT CALICUT (2021–2025)</span>
+        <span class="sym">✦</span>
+        <span>TERAHERTZ MIMO ANTENNA</span>
+        <span class="sym">✦</span>
+        <span>MULTI-AGENT AI WORKFLOWS</span>
+        <span class="sym">✦</span>
+        <span>CST MICROWAVE STUDIO</span>
+        <span class="sym">✦</span>
+        <span>GOOGLE AGENT DEVELOPMENT KIT</span>
+        <span class="sym">✦</span>
+        <span>SEMANTIC PROTOCOLS &amp; PYTHON</span>
+        <span class="sym">✦</span>
+        <span>DISCRETE ANALOG CIRCUITS</span>
+        <span class="sym">✦</span>
+        <span>HYDERABAD, INDIA</span>
+        <span class="sym">✦</span>
+        <!-- Repeated for seamless loop -->
+        <span>NIT CALICUT (2021–2025)</span>
+        <span class="sym">✦</span>
+        <span>TERAHERTZ MIMO ANTENNA</span>
+        <span class="sym">✦</span>
+        <span>MULTI-AGENT AI WORKFLOWS</span>
+        <span class="sym">✦</span>
+        <span>CST MICROWAVE STUDIO</span>
+        <span class="sym">✦</span>
+        <span>GOOGLE AGENT DEVELOPMENT KIT</span>
+        <span class="sym">✦</span>
+        <span>SEMANTIC PROTOCOLS &amp; PYTHON</span>
+        <span class="sym">✦</span>
+        <span>DISCRETE ANALOG CIRCUITS</span>
+        <span class="sym">✦</span>
+        <span>HYDERABAD, INDIA</span>
+        <span class="sym">✦</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ ABOUT SECTION ═══════════════════ -->
+    <section id="about" class="about">
+      <div class="section-container">
+        
+        <div class="section-heading reveal-item">
+          <span class="section-kicker">BACKGROUND &amp; FOCUS</span>
+          <h2 class="section-title">About Me</h2>
+          <div class="title-bar"></div>
+        </div>
+
+        <div class="about__grid">
+          
+          <div class="about__story reveal-item">
+            <blockquote class="editorial-quote">
+              "I enjoy the space where physical hardware meets modern software — understanding how signals behave in the real world and writing code to make systems intelligent."
+            </blockquote>
+
+            <p class="lead-text">
+              I graduated in 2025 with a B.Tech in Electronics &amp; Communication Engineering from 
+              <strong>National Institute of Technology Calicut</strong>. My time in college gave me a strong 
+              grounding in core electrical fundamentals — from analyzing circuit response on breadboards to 
+              simulating wave propagation in high-frequency regimes.
+            </p>
+
+            <p>
+              For my major project, I worked on computational electromagnetics in <strong>CST Studio Suite</strong>, 
+              designing a reconfigurable graphene antenna in the terahertz band. By tuning the material's chemical 
+              potential through electrostatic gating, the array achieves electronic beam-steering and high isolation 
+              without any moving physical parts.
+            </p>
+
+            <p>
+              Alongside hardware, I've spent considerable time with <strong>Google's Agent Development Kit (ADK)</strong> 
+              and Python, building multi-agent systems where individual agents handle planning, tool execution, and 
+              validation to solve complex workflows.
+            </p>
+
+            <!-- 4 Core Areas Grid -->
+            <div class="competencies-grid">
+              <div class="competency-card">
+                <div class="comp-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="4"/></svg>
+                </div>
+                <h4>Antenna &amp; RF Design</h4>
+                <p>CST Studio Suite simulation, S-parameters, graphene THz reconfigurability, and MIMO array isolation.</p>
+              </div>
+
+              <div class="competency-card">
+                <div class="comp-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 8h10M7 12h6M7 16h8"/></svg>
+                </div>
+                <h4>Software &amp; AI Systems</h4>
+                <p>Google ADK, multi-agent coordination, tool execution patterns, and stateful memory workflows in Python.</p>
+              </div>
+
+              <div class="competency-card">
+                <div class="comp-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 12h3l3-7 4 14 3-7h3"/></svg>
+                </div>
+                <h4>Protocols &amp; Comms</h4>
+                <p>Semantic compression schemas (SIU), raw socket networking, and error recovery over noisy channels.</p>
+              </div>
+
+              <div class="competency-card">
+                <div class="comp-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <h4>Discrete Electronics</h4>
+                <p>Bench power supplies, op-amp phase detectors, logic gates, and microcontroller instrumentation.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar: Quick Profile Card -->
+          <div class="about__specs reveal-item">
+            <div class="spec-card">
+              <div class="spec-card__banner">
+                <span class="spec-title">PROFILE AT A GLANCE</span>
+                <span class="spec-code">NIT-C '25</span>
+              </div>
+
+              <div class="spec-rows">
+                <div class="spec-row">
+                  <span class="spec-label">NAME</span>
+                  <span class="spec-value">Kaki Himavara Sagar</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-label">DEGREE</span>
+                  <span class="spec-value">B.Tech Electronics &amp; Communication</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-label">INSTITUTE</span>
+                  <span class="spec-value">NIT Calicut, India</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-label">LOCATION</span>
+                  <span class="spec-value">Hyderabad, India (Open to Relocate)</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-label">KEY TOOLS</span>
+                  <span class="spec-value">CST Studio, Python, Google ADK, Sockets</span>
+                </div>
+              </div>
+
+              <div class="spec-status-pill">
+                <div class="pulse-live-indicator"></div>
+                <div>
+                  <strong>Available for 2026</strong>
+                  <p>Open for full-time engineering roles, research opportunities, and technical projects.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ SELECTED PROJECTS ═══════════════════ -->
+    <section id="work" class="projects">
+      <div class="section-container">
+        
+        <div class="projects-header-row reveal-item">
+          <div>
+            <span class="section-kicker">PORTFOLIO</span>
+            <h2 class="section-title">Selected Projects</h2>
+            <p class="section-subtitle">Work in antenna simulation, multi-agent systems, and network communication.</p>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="filter-chip-bar" role="tablist" aria-label="Filter projects">
+            <button class="m3-filter-chip active" data-filter="all" role="tab" aria-selected="true">
+              <span class="chip-check">✓</span>
+              <span>All Work (4)</span>
+            </button>
+            <button class="m3-filter-chip" data-filter="rf" role="tab" aria-selected="false">
+              <span class="chip-check">✓</span>
+              <span>Antenna &amp; RF (1)</span>
+            </button>
+            <button class="m3-filter-chip" data-filter="ai" role="tab" aria-selected="false">
+              <span class="chip-check">✓</span>
+              <span>Software &amp; AI (2)</span>
+            </button>
+            <button class="m3-filter-chip" data-filter="comm" role="tab" aria-selected="false">
+              <span class="chip-check">✓</span>
+              <span>Comms (1)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="projects__grid">
+
+          <!-- PROJECT 01 -->
+          <article class="tilt-card project-card reveal-item" data-category="rf" data-num="P01">
+            <div class="card-glass-sheen"></div>
+            <div class="project-card__content">
+              
+              <div class="card-top-row">
+                <div class="card-index-tag">
+                  <span class="p-num">01</span>
+                  <span class="p-category">RF / Antenna · B.Tech Major</span>
+                </div>
+                <span class="badge-status">CST STUDIO</span>
+              </div>
+
+              <h3 class="project-title">Tunable Terahertz MIMO Antenna</h3>
+
+              <p class="project-summary">
+                Designed and simulated a graphene ring antenna in the terahertz frequency band using CST Studio Suite. 
+                By tuning the chemical potential through electrostatic gating, the antenna achieves 
+                <strong>dynamic beam steering and &gt;20 dB port isolation</strong> in a 2-element MIMO configuration — 
+                without requiring physical moving parts.
+              </p>
+
+              <!-- Technical Details Drawer -->
+              <details class="tech-drawer">
+                <summary class="drawer-trigger">
+                  <span>View Project Specs &amp; Details</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div class="drawer-body">
+                  <div class="metrics-grid">
+                    <div class="metric-box">
+                      <span class="m-val">&gt;20 dB</span>
+                      <span class="m-label">Port Isolation</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">THz Band</span>
+                      <span class="m-label">Operating Frequency</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">Electronic</span>
+                      <span class="m-label">Beam Steering</span>
+                    </div>
+                  </div>
+                  <p class="drawer-notes">
+                    <strong>Implementation Notes:</strong> Modeled in CST Microwave Studio. Tuned the surface conductivity 
+                    of graphene via chemical potential shifts to modify resonant frequency points, allowing beam steering 
+                    suited for short-range, high-bandwidth terahertz communication links.
+                  </p>
+                </div>
+              </details>
+
+              <div class="project-stack">
+                <span class="tech-pill">CST Studio</span>
+                <span class="tech-pill">S-Parameters</span>
+                <span class="tech-pill">THz Spectrum</span>
+                <span class="tech-pill">MIMO Isolation</span>
+                <span class="tech-pill">Graphene Modeling</span>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- PROJECT 02 -->
+          <article class="tilt-card project-card reveal-item" data-category="ai" data-num="P02">
+            <div class="card-glass-sheen"></div>
+            <div class="project-card__content">
+              
+              <div class="card-top-row">
+                <div class="card-index-tag">
+                  <span class="p-num">02</span>
+                  <span class="p-category">Software · Google ADK</span>
+                </div>
+                <span class="badge-status">PYTHON</span>
+              </div>
+
+              <h3 class="project-title">Multi-Agent Workflow Engine</h3>
+
+              <p class="project-summary">
+                A multi-agent task execution system built using Google's Agent Development Kit. 
+                Coordinates modular agents specialized in <strong>planning, tool execution, and result validation</strong>. 
+                Features dynamic tool invocation, contextual memory handling, and robust recovery when tool steps fail.
+              </p>
+
+              <details class="tech-drawer">
+                <summary class="drawer-trigger">
+                  <span>View Project Specs &amp; Details</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div class="drawer-body">
+                  <div class="metrics-grid">
+                    <div class="metric-box">
+                      <span class="m-val">Google ADK</span>
+                      <span class="m-label">Agent Framework</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">Modular</span>
+                      <span class="m-label">Agent Architecture</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">Contextual</span>
+                      <span class="m-label">Memory Graph</span>
+                    </div>
+                  </div>
+                  <p class="drawer-notes">
+                    <strong>Implementation Notes:</strong> Designed using a planner-executor pattern in Python. 
+                    A central planner breaks down complex inputs into structured steps, sub-agents execute specific tools, 
+                    and a validation step ensures output quality before completion.
+                  </p>
+                </div>
+              </details>
+
+              <div class="project-stack">
+                <span class="tech-pill">Python</span>
+                <span class="tech-pill">Google ADK</span>
+                <span class="tech-pill">Multi-Agent AI</span>
+                <span class="tech-pill">Tool Invocation</span>
+                <span class="tech-pill">Workflow Orchestration</span>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- PROJECT 03 -->
+          <article class="tilt-card project-card reveal-item" data-category="comm" data-num="P03">
+            <div class="card-glass-sheen"></div>
+            <div class="project-card__content">
+              
+              <div class="card-top-row">
+                <div class="card-index-tag">
+                  <span class="p-num">03</span>
+                  <span class="p-category">Network Protocols · Python Stdlib</span>
+                </div>
+                <span class="badge-status">ZERO-DEP</span>
+              </div>
+
+              <h3 class="project-title">Semantic Communication Pipeline</h3>
+
+              <p class="project-summary">
+                A prototype communication system built entirely on Python's standard library. 
+                Encodes natural language into a compact Semantic Information Unit (SIU) schema, compresses with zlib, 
+                transmits over a lossy socket channel, and recovers original meaning using deterministic rules and LLM fallback.
+              </p>
+
+              <details class="tech-drawer">
+                <summary class="drawer-trigger">
+                  <span>View Project Specs &amp; Details</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div class="drawer-body">
+                  <div class="metrics-grid">
+                    <div class="metric-box">
+                      <span class="m-val">68%</span>
+                      <span class="m-label">Payload Reduction</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">Zero-Dep</span>
+                      <span class="m-label">Python Standard Lib</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">SIU</span>
+                      <span class="m-label">Semantic Schema</span>
+                    </div>
+                  </div>
+                  <p class="drawer-notes">
+                    <strong>Implementation Notes:</strong> Focuses on transmitting core intent rather than raw characters. 
+                    Enables intelligible communication across heavily degraded channels where standard character-by-character 
+                    transmission suffers from heavy packet corruption.
+                  </p>
+                </div>
+              </details>
+
+              <div class="project-stack">
+                <span class="tech-pill">Python Stdlib</span>
+                <span class="tech-pill">Raw Sockets</span>
+                <span class="tech-pill">zlib Compression</span>
+                <span class="tech-pill">Semantic Recovery</span>
+                <span class="tech-pill">Channel Simulation</span>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- PROJECT 04 -->
+          <article class="tilt-card project-card reveal-item" data-category="ai" data-num="P04">
+            <div class="card-glass-sheen"></div>
+            <div class="project-card__content">
+              
+              <div class="card-top-row">
+                <div class="card-index-tag">
+                  <span class="p-num">04</span>
+                  <span class="p-category">Certification · Kaggle &amp; Google</span>
+                </div>
+                <span class="badge-status">CERTIFIED</span>
+              </div>
+
+              <h3 class="project-title">Multi-Agent Systems Capstone</h3>
+
+              <p class="project-summary">
+                Completed the Kaggle and Google ADK Intensive Capstone. Designed and evaluated cooperative 
+                multi-agent workflows, focusing on automated tool error-handling, inter-agent delegation, 
+                and resilient task completion evaluated against benchmark test scenarios.
+              </p>
+
+              <details class="tech-drawer">
+                <summary class="drawer-trigger">
+                  <span>View Project Specs &amp; Details</span>
+                  <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div class="drawer-body">
+                  <div class="metrics-grid">
+                    <div class="metric-box">
+                      <span class="m-val">Kaggle</span>
+                      <span class="m-label">Verified Capstone</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">ADK 2.0</span>
+                      <span class="m-label">Google Toolkit</span>
+                    </div>
+                    <div class="metric-box">
+                      <span class="m-val">100%</span>
+                      <span class="m-label">Task Benchmark</span>
+                    </div>
+                  </div>
+                  <p class="drawer-notes">
+                    <strong>Implementation Notes:</strong> Validated multi-agent tool execution against evaluation 
+                    datasets, testing edge cases in tool timeouts, delegation chains, and state preservation.
+                  </p>
+                </div>
+              </details>
+
+              <div class="project-stack">
+                <span class="tech-pill">Google ADK</span>
+                <span class="tech-pill">Kaggle Capstone</span>
+                <span class="tech-pill">Agent Delegation</span>
+                <span class="tech-pill">Error Handling</span>
+              </div>
+
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ HARDWARE LAB ═══════════════════ -->
+    <section id="lab" class="lab">
+      <div class="section-container">
+        
+        <div class="lab__header-split reveal-item">
+          <div>
+            <span class="section-kicker">HANDS-ON BUILDS</span>
+            <h2 class="section-title">Hardware &amp; Circuit Projects</h2>
+            <p class="section-subtitle">
+              Analog circuits, power conditioning, and discrete logic boards assembled on breadboards and PCB.
+            </p>
+          </div>
+
+          <div class="lab__live-meter">
+            <div class="meter-screen">
+              <span class="meter-freq">FREQ: 1.000 kHz</span>
+              <svg class="meter-wave" width="120" height="24" viewBox="0 0 120 24">
+                <path d="M0 12 Q15 0 30 12 T60 12 T90 12 T120 12" fill="none" stroke="var(--md-primary)" stroke-width="2"/>
+              </svg>
+            </div>
+            <span class="meter-tag">BENCH TELEMETRY</span>
+          </div>
+        </div>
+
+        <div class="lab__timeline">
+          
+          <div class="lab__row reveal-item" data-tech="Power Systems">
+            <span class="lab-col-year">2023</span>
+            <div class="lab-col-main">
+              <h4 class="lab-row-title">Regulated Bench Power Supply (3–15V)</h4>
+              <p class="lab-row-desc">Designed a linear DC bench supply with variable output, active shunt regulation, short-circuit current limit, and low voltage ripple.</p>
+            </div>
+            <span class="lab-col-stack">Linear PSU · Shunt Regulator</span>
+          </div>
+
+          <div class="lab__row reveal-item" data-tech="Embedded Micro">
+            <span class="lab-col-year">2023</span>
+            <div class="lab-col-main">
+              <h4 class="lab-row-title">Directional Visitor Counter</h4>
+              <p class="lab-row-desc">Built a bidirectional room occupancy counter using dual infrared sensors and an embedded microcontroller driving multiplexed 7-segment displays.</p>
+            </div>
+            <span class="lab-col-stack">IR Sensors · 7-Seg Multiplexing</span>
+          </div>
+
+          <div class="lab__row reveal-item" data-tech="Analog Circuits">
+            <span class="lab-col-year">2022</span>
+            <div class="lab-col-main">
+              <h4 class="lab-row-title">Op-Amp XOR Gate Phase Detector</h4>
+              <p class="lab-row-desc">Implemented a Boolean XOR logic gate using discrete 741 operational amplifiers to function as an analog phase comparator for a phase-locked loop (PLL).</p>
+            </div>
+            <span class="lab-col-stack">Analog Op-Amps · PLL Comparator</span>
+          </div>
+
+          <div class="lab__row reveal-item" data-tech="Digital Synthesis">
+            <span class="lab-col-year">2022</span>
+            <div class="lab-col-main">
+              <h4 class="lab-row-title">Modulo-3 Accumulator Circuit</h4>
+              <p class="lab-row-desc">Designed and wired a combinational logic and flip-flop circuit performing modulo-3 accumulation with minimized gate count.</p>
+            </div>
+            <span class="lab-col-stack">Combinational Logic · Flip-Flops</span>
+          </div>
+
+          <div class="lab__row reveal-item" data-tech="Analog Monitoring">
+            <span class="lab-col-year">2023</span>
+            <div class="lab-col-main">
+              <h4 class="lab-row-title">Discrete Battery Level Monitor</h4>
+              <p class="lab-row-desc">Assembled a multi-threshold battery voltage monitor using Zener reference diodes and discrete bipolar junction transistors (BJT).</p>
+            </div>
+            <span class="lab-col-stack">Zener Reference · BJT Circuit</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ CONTACT SECTION ═══════════════════ -->
+    <section id="contact" class="contact">
+      <div class="section-container">
+        
+        <div class="contact__box reveal-item">
+          
+          <div class="contact__header">
+            <span class="section-kicker">REACH OUT</span>
+            <h2 class="contact__heading">Let's Connect.</h2>
+            <p class="contact__lead">
+              I am open to <strong>2026 engineering roles</strong>, research collaborations, and technical projects. 
+              Whether you are hiring for an engineering team or want to discuss a project, my inbox is open.
+            </p>
+          </div>
+
+          <!-- Click-to-Copy Email Banner -->
+          <div class="contact__email-wrapper">
+            <button class="email-copy-card ripple-trigger" id="copy-email-btn" aria-label="Copy email address to clipboard">
+              <div class="email-main-info">
+                <span class="email-action-label">CLICK TO COPY ADDRESS</span>
+                <span class="email-address-text">himavarasagar6675@gmail.com</span>
+              </div>
+              <div class="email-copy-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </div>
+            </button>
+          </div>
+
+          <!-- Social Links Grid -->
+          <div class="contact__social-grid">
+            
+            <a href="https://github.com/kakihimavarasagar" target="_blank" rel="noopener" class="social-chip ripple-trigger">
+              <div class="social-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              </div>
+              <div class="social-text">
+                <span class="social-title">GitHub</span>
+                <span class="social-sub">@kakihimavarasagar</span>
+              </div>
+              <span class="arrow-ext">↗</span>
+            </a>
+
+            <a href="https://linkedin.com/in/kakihimavarasagar" target="_blank" rel="noopener" class="social-chip ripple-trigger">
+              <div class="social-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </div>
+              <div class="social-text">
+                <span class="social-title">LinkedIn</span>
+                <span class="social-sub">in/kakihimavarasagar</span>
+              </div>
+              <span class="arrow-ext">↗</span>
+            </a>
+
+            <a href="tel:+916303462301" class="social-chip ripple-trigger">
+              <div class="social-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              </div>
+              <div class="social-text">
+                <span class="social-title">Phone / WhatsApp</span>
+                <span class="social-sub">+91 63034 62301</span>
+              </div>
+              <span class="arrow-ext">↗</span>
+            </a>
+
+          </div>
+
+          <div class="contact__meta-row">
+            <span>LOCATION: HYDERABAD, INDIA</span>
+            <span>TIMEZONE: IST (UTC+05:30)</span>
+            <span>STATUS: OPEN TO OPPORTUNITIES</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <span class="footer-logo">HS</span>
+        <span>Kaki Himavara Sagar · B.Tech ECE, NIT Calicut · © 2025</span>
+      </div>
+      <div class="footer-right">
+        <a href="#hero" class="back-to-top ripple-trigger" aria-label="Back to top">
+          <span>TOP</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════ M3 FLOATING QUICK-DOCK ═══════════════════ -->
+  <aside class="floating-dock" id="floating-dock" aria-label="Quick navigation">
+    <a href="#about" class="dock-link" title="About">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span>About</span>
+    </a>
+    <a href="#work" class="dock-link" title="Projects">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span>Projects</span>
+    </a>
+    <a href="#lab" class="dock-link" title="Hardware Lab">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31L3.08 19.33A2 2 0 0 0 4.67 22h14.66a2 2 0 0 0 1.59-2.67L14 9.31V2"/></svg>
+      <span>Lab</span>
+    </a>
+    <a href="#contact" class="dock-link dock-link--cta" title="Contact">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span>Connect</span>
+    </a>
+  </aside>
+
+  <!-- M3 Feedback Toast / Snackbar -->
+  <div class="m3-snackbar" id="m3-snackbar" role="status" aria-live="polite">
+    <span class="snackbar-icon">✨</span>
+    <span class="snackbar-message">Copied email to clipboard!</span>
+  </div>
+
+  <!-- Noise Grain Overlay -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Scripts -->
+
+</body>
+</html>
