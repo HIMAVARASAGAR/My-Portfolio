@@ -1,0 +1,74 @@
+/*
+  Palette — warm paper, near-black ink.
+
+  Deliberately NOT the dark void from the old brief. On paper, the black orb
+  reads as a physical object with weight and a highlight; on a dark background
+  it read as a hole punched in the page. Light ground, one dark object, no
+  gradients doing the work.
+
+  The only saturated thing on the site is the orb. Everything else is paper.
+*/
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+}
+
+:root {
+  --background: #efede7;
+  --foreground: #17160f;
+  --muted: #e2dfd7;
+  --muted-foreground: #6e6a60;
+  --line: #d5d1c7;
+  --accent: #b4462a;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Type. Editorial settings: tight display sizes, generous body leading. */
+.display {
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

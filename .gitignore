@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.npm-cache/
+*.local.mjs
+.site-*.png
+.load-*.png
+.shot*.png
+.DS_Store
