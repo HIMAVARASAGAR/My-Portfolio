@@ -1,0 +1,6 @@
+/* Identity layer only. Motion, render pipeline and layout belong to the supplied runtime. */
+:root { --portfolio-paper:#f8f6ed; --portfolio-ink:#17172b; --portfolio-accent:#dbfa58; }
+.portfolio-hero-media { position: absolute; width:48vw; height:27vw; left:26vw; top:34vh; }
+@media(max-width:767px) { .portfolio-hero-media {width:84vw;height:47.25vw;left:8vw;top:36vh;} }
+.portfolio-email { position:relative; z-index:10; display:block; color:#dbfa58; font-size:clamp(18px,2.3vw,36px); padding:45px 0; text-decoration:none; overflow-wrap:anywhere; }
+.portfolio-email:hover { text-decoration:underline; text-underline-offset:8px; }

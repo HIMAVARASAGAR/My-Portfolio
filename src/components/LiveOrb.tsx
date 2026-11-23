@@ -3,10 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export type LiveOrbVariant = "white" | "black" | "webgl" | "custom";
+export type LiveOrbVariant =
+  | "white"
+  | "black"
+  | "webgl"
+  | "volt"
+  | "sunset"
+  | "klein"
+  | "custom";
 
 export type LiveOrbOptions = {
-  /** Material preset. Default `"white"`. */
+  /** Material preset. Default `"black"`. */
   variant?: LiveOrbVariant;
   /** Body hex — used when `variant="custom"`. */
   color?: string;
@@ -16,24 +23,45 @@ export type LiveOrbOptions = {
   colors?: string[];
   /** Eyes follow the pointer. Default `true`. */
   interactive?: boolean;
-  /** Occasional blink. Default `true`. */
+  /** Occasional natural blink. Default `true`. */
   blink?: boolean;
+  /** Autonomous wander: eyes casually look around when pointer is still or idle. */
+  wander?: boolean;
+  /** Sleep mode (eyes shut). Default `false`. */
+  sleep?: boolean;
+  /** Manual blink / squint amounts: [left, right] from 0 (open) to 1 (closed) */
+  manualBlink?: [number, number];
+  /** Eye capsule dimensions */
+  eyeSpacing?: number;
+  eyeRadius?: number;
+  eyeHeight?: number;
+  eyeY?: number;
+  /** 3D subtle depth / rim shading (0.0 to 1.0). Default `0.0` (flat minimal). */
+  shading?: number;
+  /** Speed multiplier for noise/animations. Default `0.55`. */
+  speed?: number;
+  /** Callback with current gaze coordinates (normalized -1 to 1). */
+  onGazeChange?: (gaze: { x: number; y: number }) => void;
   /** Fires when WebGL is ready (`true`) or torn down (`false`). */
   onHasGl?: (ok: boolean) => void;
 };
 
 export type LiveOrbInstance = {
   setOptions: (options: Partial<LiveOrbOptions>) => void;
+  triggerBlink: () => void;
+  triggerWink: (eye: "left" | "right") => void;
   destroy: () => void;
 };
 
-export const WHITE = { color: "#F4F4F5", eyeColor: "#09090B" } as const;
-export const BLACK = { color: "#18181B", eyeColor: "#F4F4F5" } as const;
-export const CUSTOM_DEFAULT = {
-  color: "#7C5CFF",
-  eyeColor: "#FAFAFA",
+export const PRESETS = {
+  black: { color: "#18181B", eyeColor: "#F4F4F5" },
+  white: { color: "#F4F4F5", eyeColor: "#09090B" },
+  volt: { color: "#D2FF00", eyeColor: "#0F1115" },
+  sunset: { color: "#FF5376", eyeColor: "#FFF375" },
+  klein: { color: "#002FA7", eyeColor: "#FFFFFF" },
+  custom: { color: "#7C5CFF", eyeColor: "#FAFAFA" },
 } as const;
-/** Violet / foam / dust-rose — stock unlit wash. */
+
 export const WEBGL_COLORS = ["#7C6AF7", "#7DD3C7", "#E8B4D4"];
 
 const VERT = `
@@ -50,13 +78,19 @@ uniform vec2 u_resolution;
 uniform float u_time;
 uniform float u_speed;
 uniform vec2 u_look;
-uniform float u_blink;
+uniform vec2 u_blink;
 uniform float u_mode;
+uniform float u_shading;
 uniform vec3 u_body;
 uniform vec3 u_eye;
 uniform vec3 u_c1;
 uniform vec3 u_c2;
 uniform vec3 u_c3;
+
+uniform float u_eye_spacing;
+uniform float u_eye_radius;
+uniform float u_eye_height;
+uniform float u_eye_y;
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -102,8 +136,8 @@ float eyeMask(vec3 n, vec3 e, vec3 right, vec3 up, float halfH, float rad) {
   float y = dot(n, up) - dot(e, up);
   y -= clamp(y, -halfH, halfH);
   float d = length(vec2(x, y)) - rad;
-  float fill = 1.0 - smoothstep(-0.01, 0.01, d);
-  return fill * smoothstep(0.12, 0.32, facing);
+  float fill = 1.0 - smoothstep(-0.012, 0.012, d);
+  return fill * smoothstep(0.10, 0.32, facing);
 }
 
 vec3 wash(vec3 n, float t) {
@@ -142,28 +176,34 @@ void main() {
 
   vec3 right = orient(vec3(1.0, 0.0, 0.0), look);
   vec3 up = orient(vec3(0.0, 1.0, 0.0), look);
-  vec3 eL = orient(normalize(vec3(-0.32, 0.08, 1.0)), look);
-  vec3 eR = orient(normalize(vec3(0.32, 0.08, 1.0)), look);
+  vec3 eL = orient(normalize(vec3(-u_eye_spacing, u_eye_y, 1.0)), look);
+  vec3 eR = orient(normalize(vec3(u_eye_spacing, u_eye_y, 1.0)), look);
 
-  float halfH = mix(0.128, 0.012, u_blink);
-  float rad = mix(0.054, 0.062, u_blink);
+  float halfHL = mix(u_eye_height, 0.010, u_blink.x);
+  float radL = mix(u_eye_radius, u_eye_radius * 1.15, u_blink.x);
+
+  float halfHR = mix(u_eye_height, 0.010, u_blink.y);
+  float radR = mix(u_eye_radius, u_eye_radius * 1.15, u_blink.y);
+
   float eyes = max(
-    eyeMask(n, eL, right, up, halfH, rad),
-    eyeMask(n, eR, right, up, halfH, rad)
+    eyeMask(n, eL, right, up, halfHL, radL),
+    eyeMask(n, eR, right, up, halfHR, radR)
   );
 
   vec3 body = u_mode > 0.5 ? wash(n, u_time * u_speed) : u_body;
+
+  if (u_shading > 0.0) {
+    vec3 lightDir = normalize(vec3(0.7, 1.1, 1.4));
+    float diff = max(dot(n, lightDir), 0.0) * 0.22;
+    float fresnel = pow(1.0 - max(n.z, 0.0), 2.2) * 0.35;
+    body = mix(body, body + vec3(diff + fresnel), u_shading);
+  }
+
   vec3 col = mix(body, u_eye, clamp(eyes, 0.0, 1.0));
 
   gl_FragColor = vec4(clamp(col, 0.0, 1.0), edge);
 }
 `;
-
-function isDev() {
-  return (
-    typeof process !== "undefined" && process.env?.NODE_ENV !== "production"
-  );
-}
 
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "").trim();
@@ -173,125 +213,107 @@ function hexToRgb(hex: string): [number, number, number] {
           .split("")
           .map((c) => c + c)
           .join("")
-      : h.padEnd(6, "0").slice(0, 6);
-  const n = Number.parseInt(full, 16);
-  if (Number.isNaN(n)) return [0.96, 0.96, 0.96];
-  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+      : h;
+  const num = parseInt(full, 16);
+  if (Number.isNaN(num)) return [1, 1, 1];
+  return [
+    ((num >> 16) & 255) / 255,
+    ((num >> 8) & 255) / 255,
+    (num & 255) / 255,
+  ];
 }
 
-function compile(gl: WebGLRenderingContext, type: number, source: string) {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    if (isDev()) {
-      console.warn(
-        "LiveOrb: shader failed to compile\n",
-        gl.getShaderInfoLog(shader),
-      );
-    }
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
-}
-
-export function resolveVariant(
-  variant: LiveOrbVariant,
+function resolveVariant(
+  variant: LiveOrbVariant = "black",
   color?: string,
   eyeColor?: string,
   colors?: string[],
 ) {
-  let body: string = WHITE.color;
-  let eye: string = WHITE.eyeColor;
-  let mode = 0;
-  let palette: string[] = WEBGL_COLORS;
-
-  if (variant === "black") {
-    body = BLACK.color;
-    eye = BLACK.eyeColor;
-  } else if (variant === "webgl") {
-    palette = colors && colors.length > 0 ? colors : WEBGL_COLORS;
-    body = palette[1] ?? WEBGL_COLORS[1]!;
-    eye = "#0C0C10";
-    mode = 1;
-  } else if (variant === "custom") {
-    body = color ?? CUSTOM_DEFAULT.color;
-    eye = eyeColor ?? CUSTOM_DEFAULT.eyeColor;
-  }
-
-  return { body, eye, mode, palette };
-}
-
-export function fallbackFaceStyle(
-  resolved: ReturnType<typeof resolveVariant>,
-): {
-  backgroundColor?: string;
-  backgroundImage?: string;
-} {
-  if (resolved.mode === 1) {
-    const a = resolved.palette[0] ?? WEBGL_COLORS[0];
-    const b = resolved.palette[1] ?? WEBGL_COLORS[1];
-    const c = resolved.palette[2] ?? WEBGL_COLORS[2];
+  if (variant === "webgl") {
     return {
-      backgroundImage: `linear-gradient(135deg, ${a}, ${b}, ${c})`,
+      body: "#18181B",
+      eye: "#FFFFFF",
+      palette: colors?.length ? colors : WEBGL_COLORS,
+      mode: 1,
     };
   }
-  return { backgroundColor: resolved.body };
+  if (variant === "custom") {
+    return {
+      body: color || PRESETS.custom.color,
+      eye: eyeColor || PRESETS.custom.eyeColor,
+      palette: WEBGL_COLORS,
+      mode: 0,
+    };
+  }
+  const preset = PRESETS[variant] || PRESETS.black;
+  return {
+    body: color || preset.color,
+    eye: eyeColor || preset.eyeColor,
+    palette: WEBGL_COLORS,
+    mode: 0,
+  };
 }
 
-/**
- * Evenly lit sphere with two capsule eyes that follow the pointer.
- * The orb stays put — only the gaze moves.
- */
 export function createLiveOrb(
   canvas: HTMLCanvasElement,
-  initial: LiveOrbOptions = {},
-): LiveOrbInstance | null {
-  let options: Required<
-    Pick<LiveOrbOptions, "variant" | "interactive" | "blink">
-  > &
-    LiveOrbOptions = {
-    variant: "white",
+  initialOptions: LiveOrbOptions = {},
+): LiveOrbInstance {
+  let options: LiveOrbOptions = {
+    variant: "black",
     interactive: true,
     blink: true,
-    ...initial,
+    wander: false,
+    sleep: false,
+    eyeSpacing: 0.32,
+    eyeRadius: 0.054,
+    eyeHeight: 0.128,
+    eyeY: 0.08,
+    shading: 0.0,
+    speed: 0.55,
+    ...initialOptions,
   };
-
-  const look = { x: 0, y: 0.08 };
-  const targetLook = { x: 0, y: 0.08 };
-  let reduce = false;
 
   const gl = canvas.getContext("webgl", {
     alpha: true,
-    antialias: false,
-    depth: false,
-    stencil: false,
-    premultipliedAlpha: false,
-    powerPreference: "high-performance",
+    antialias: true,
+    premultipliedAlpha: true,
+    preserveDrawingBuffer: true,
   });
-  if (!gl) return null;
 
-  const vs = compile(gl, gl.VERTEX_SHADER, VERT);
-  const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
-  if (!vs || !fs) return null;
+  if (!gl) {
+    options.onHasGl?.(false);
+    return {
+      setOptions: () => {},
+      triggerBlink: () => {},
+      triggerWink: () => {},
+      destroy: () => {},
+    };
+  }
 
-  const program = gl.createProgram();
-  if (!program) return null;
+  const vs = gl.createShader(gl.VERTEX_SHADER)!;
+  gl.shaderSource(vs, VERT);
+  gl.compileShader(vs);
+
+  const fs = gl.createShader(gl.FRAGMENT_SHADER)!;
+  gl.shaderSource(fs, FRAG);
+  gl.compileShader(fs);
+
+  const program = gl.createProgram()!;
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
+
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    if (isDev()) {
-      console.warn(
-        "LiveOrb: program failed to link\n",
-        gl.getProgramInfoLog(program),
-      );
-    }
-    return null;
+    console.error("LiveOrb WebGL link error:", gl.getProgramInfoLog(program));
+    options.onHasGl?.(false);
+    return {
+      setOptions: () => {},
+      triggerBlink: () => {},
+      triggerWink: () => {},
+      destroy: () => {},
+    };
   }
-  gl.useProgram(program);
+
   options.onHasGl?.(true);
 
   const buf = gl.createBuffer();
@@ -301,9 +323,10 @@ export function createLiveOrb(
     new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
     gl.STATIC_DRAW,
   );
-  const loc = gl.getAttribLocation(program, "a_position");
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  const aPos = gl.getAttribLocation(program, "a_position");
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
   const uResolution = gl.getUniformLocation(program, "u_resolution");
   const uTime = gl.getUniformLocation(program, "u_time");
@@ -311,57 +334,88 @@ export function createLiveOrb(
   const uLook = gl.getUniformLocation(program, "u_look");
   const uBlink = gl.getUniformLocation(program, "u_blink");
   const uMode = gl.getUniformLocation(program, "u_mode");
+  const uShading = gl.getUniformLocation(program, "u_shading");
   const uBody = gl.getUniformLocation(program, "u_body");
   const uEye = gl.getUniformLocation(program, "u_eye");
   const uC1 = gl.getUniformLocation(program, "u_c1");
   const uC2 = gl.getUniformLocation(program, "u_c2");
   const uC3 = gl.getUniformLocation(program, "u_c3");
+  const uEyeSpacing = gl.getUniformLocation(program, "u_eye_spacing");
+  const uEyeRadius = gl.getUniformLocation(program, "u_eye_radius");
+  const uEyeHeight = gl.getUniformLocation(program, "u_eye_height");
+  const uEyeY = gl.getUniformLocation(program, "u_eye_y");
 
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(program);
 
-  let raf = 0;
-  let running = true;
-  const start = performance.now();
-  let nextBlink = start + 1800 + Math.random() * 2400;
-  let blinkAt = -10_000;
-
-  const resize = () => {
-    const parent = canvas.parentElement;
-    if (!parent) return;
+  let width = 0;
+  let height = 0;
+  const updateSize = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const w = parent.clientWidth;
-    const h = parent.clientHeight;
-    if (w <= 0 || h <= 0) return;
-    canvas.width = Math.max(1, Math.floor(w * dpr));
-    canvas.height = Math.max(1, Math.floor(h * dpr));
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(1, Math.round(rect.width * dpr));
+    const h = Math.max(1, Math.round(rect.height * dpr));
+    if (w !== width || h !== height) {
+      width = w;
+      height = h;
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
+    }
   };
 
-  resize();
-  const ro = new ResizeObserver(resize);
-  if (canvas.parentElement) ro.observe(canvas.parentElement);
+  const ro = new ResizeObserver(updateSize);
+  ro.observe(canvas);
+  updateSize();
 
-  const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const onReduce = () => {
-    reduce = mqReduce.matches;
+  let running = true;
+  let raf = 0;
+  const start = performance.now();
+
+  const look = { x: 0, y: 0.08 };
+  const targetLook = { x: 0, y: 0.08 };
+
+  let nextBlink = start + 1800 + Math.random() * 3000;
+  let blinkLeftAt = -10000;
+  let blinkRightAt = -10000;
+
+  // Autonomous wander state
+  let nextWander = start + 1500;
+  let isPointerActive = false;
+  let pointerTimeout = 0;
+
+  const triggerBlink = () => {
+    const now = performance.now();
+    blinkLeftAt = now;
+    blinkRightAt = now;
+    nextBlink = now + 2500 + Math.random() * 3500;
   };
-  onReduce();
-  mqReduce.addEventListener("change", onReduce);
+
+  const triggerWink = (eye: "left" | "right") => {
+    const now = performance.now();
+    if (eye === "left") blinkLeftAt = now;
+    else blinkRightAt = now;
+  };
 
   const onMove = (e: PointerEvent) => {
     if (!options.interactive) return;
-    const parent = canvas.parentElement;
-    if (!parent) return;
-    const rect = parent.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-    const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-    const dy = (rect.top + rect.height / 2 - e.clientY) / (rect.height / 2);
-    targetLook.x = Math.min(1, Math.max(-1, dx));
-    targetLook.y = Math.min(1, Math.max(-1, dy));
+    isPointerActive = true;
+    window.clearTimeout(pointerTimeout);
+    pointerTimeout = window.setTimeout(() => {
+      isPointerActive = false;
+    }, 2800);
+
+    const rect = canvas.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const r = Math.max(rect.width, rect.height) / 2;
+    const dx = (e.clientX - cx) / Math.max(r * 2.2, 1);
+    const dy = (e.clientY - cy) / Math.max(r * 2.2, 1);
+    const dist = Math.hypot(dx, dy);
+    const norm = dist > 1 ? 1 / dist : 1;
+    targetLook.x = dx * norm;
+    targetLook.y = -dy * norm;
   };
+
   window.addEventListener("pointermove", onMove, { passive: true });
 
   const tick = (now: number) => {
@@ -375,25 +429,51 @@ export function createLiveOrb(
     );
     const time = (now - start) / 1000;
 
-    if (options.interactive) {
-      look.x += (targetLook.x - look.x) * 0.16;
-      look.y += (targetLook.y - look.y) * 0.16;
-    } else {
-      look.x += (0 - look.x) * 0.12;
-      look.y += (0.08 - look.y) * 0.12;
+    // Autonomous wander when idle or when wander mode is enabled
+    if (options.wander || (!isPointerActive && options.interactive)) {
+      if (now >= nextWander) {
+        nextWander = now + 1200 + Math.random() * 2600;
+        const angle = Math.random() * Math.PI * 2;
+        const radius = 0.15 + Math.random() * 0.65;
+        targetLook.x = Math.cos(angle) * radius;
+        targetLook.y = Math.sin(angle) * radius * 0.7;
+      }
     }
 
-    if (!reduce && options.blink && now >= nextBlink) {
-      blinkAt = now;
-      nextBlink = now + 2200 + Math.random() * 3800;
+    if (options.sleep) {
+      targetLook.x += (0 - targetLook.x) * 0.05;
+      targetLook.y += (-0.2 - targetLook.y) * 0.05;
     }
-    const bt = (now - blinkAt) / 1000;
-    let b = 0;
-    if (!reduce && options.blink) {
-      if (bt < 0.055) b = bt / 0.055;
-      else if (bt < 0.1) b = 1;
-      else if (bt < 0.18) b = 1 - (bt - 0.1) / 0.08;
+
+    // Smooth spring gaze interpolation
+    look.x += (targetLook.x - look.x) * 0.15;
+    look.y += (targetLook.y - look.y) * 0.15;
+    options.onGazeChange?.({ x: look.x, y: look.y });
+
+    // Blink calculation
+    if (options.blink && !options.sleep && now >= nextBlink) {
+      blinkLeftAt = now;
+      blinkRightAt = now;
+      const isDoubleBlink = Math.random() < 0.18;
+      nextBlink = now + (isDoubleBlink ? 350 : 2500 + Math.random() * 3800);
     }
+
+    const calcBlink = (at: number): number => {
+      const bt = (now - at) / 1000;
+      if (bt < 0.05) return bt / 0.05;
+      if (bt < 0.09) return 1.0;
+      if (bt < 0.17) return 1.0 - (bt - 0.09) / 0.08;
+      return 0.0;
+    };
+
+    let bL = options.sleep ? 1.0 : calcBlink(blinkLeftAt);
+    let bR = options.sleep ? 1.0 : calcBlink(blinkRightAt);
+
+    if (options.manualBlink) {
+      bL = Math.max(bL, options.manualBlink[0]);
+      bR = Math.max(bR, options.manualBlink[1]);
+    }
+
     const body = hexToRgb(resolved.body);
     const eye = hexToRgb(resolved.eye);
     const palette = [0, 1, 2].map((i) =>
@@ -404,17 +484,24 @@ export function createLiveOrb(
 
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+
     gl.uniform2f(uResolution, canvas.width, canvas.height);
-    gl.uniform1f(uTime, reduce ? 0 : time);
-    gl.uniform1f(uSpeed, reduce ? 0 : 0.55);
+    gl.uniform1f(uTime, time);
+    gl.uniform1f(uSpeed, options.speed ?? 0.55);
     gl.uniform2f(uLook, look.x, look.y);
-    gl.uniform1f(uBlink, b);
+    gl.uniform2f(uBlink, bL, bR);
     gl.uniform1f(uMode, resolved.mode);
+    gl.uniform1f(uShading, options.shading ?? 0.0);
     gl.uniform3f(uBody, body[0], body[1], body[2]);
     gl.uniform3f(uEye, eye[0], eye[1], eye[2]);
     gl.uniform3f(uC1, palette[0]![0], palette[0]![1], palette[0]![2]);
     gl.uniform3f(uC2, palette[1]![0], palette[1]![1], palette[1]![2]);
     gl.uniform3f(uC3, palette[2]![0], palette[2]![1], palette[2]![2]);
+
+    gl.uniform1f(uEyeSpacing, options.eyeSpacing ?? 0.32);
+    gl.uniform1f(uEyeRadius, options.eyeRadius ?? 0.054);
+    gl.uniform1f(uEyeHeight, options.eyeHeight ?? 0.128);
+    gl.uniform1f(uEyeY, options.eyeY ?? 0.08);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     raf = requestAnimationFrame(tick);
@@ -426,12 +513,14 @@ export function createLiveOrb(
     setOptions(next) {
       options = { ...options, ...next };
     },
+    triggerBlink,
+    triggerWink,
     destroy() {
       running = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
-      mqReduce.removeEventListener("change", onReduce);
       window.removeEventListener("pointermove", onMove);
+      window.clearTimeout(pointerTimeout);
       options.onHasGl?.(false);
       gl.deleteProgram(program);
       gl.deleteShader(vs);
@@ -443,23 +532,33 @@ export function createLiveOrb(
 
 export type LiveOrbProps = Omit<LiveOrbOptions, "onHasGl"> & {
   className?: string;
-  /** Edge length in CSS pixels. Default `280`. */
   size?: number;
+  onClick?: () => void;
 };
 
 /**
- * Evenly lit sphere with two capsule eyes that follow the pointer.
- * The orb stays put — only the gaze moves.
+ * LiveOrb — Interactive Sphere with capsule eyes that smoothly track gaze.
  */
 export function LiveOrb({
   className,
   size = 280,
-  variant = "white",
+  variant = "black",
   color,
   eyeColor,
   colors,
   interactive = true,
   blink = true,
+  wander = false,
+  sleep = false,
+  manualBlink,
+  eyeSpacing = 0.32,
+  eyeRadius = 0.054,
+  eyeHeight = 0.128,
+  eyeY = 0.08,
+  shading = 0.0,
+  speed = 0.55,
+  onGazeChange,
+  onClick,
 }: LiveOrbProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const instanceRef = useRef<LiveOrbInstance | null>(null);
@@ -475,13 +574,23 @@ export function LiveOrb({
       colors,
       interactive,
       blink,
+      wander,
+      sleep,
+      manualBlink,
+      eyeSpacing,
+      eyeRadius,
+      eyeHeight,
+      eyeY,
+      shading,
+      speed,
+      onGazeChange,
       onHasGl: setHasGl,
     });
     return () => {
       instanceRef.current?.destroy();
       instanceRef.current = null;
     };
-    // Engine reads live options via setOptions; mount once.
+    // Mount once; engine updates via setOptions
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -493,49 +602,106 @@ export function LiveOrb({
       colors,
       interactive,
       blink,
+      wander,
+      sleep,
+      manualBlink,
+      eyeSpacing,
+      eyeRadius,
+      eyeHeight,
+      eyeY,
+      shading,
+      speed,
+      onGazeChange,
       onHasGl: setHasGl,
     });
-  }, [variant, color, eyeColor, colors, interactive, blink]);
+  }, [
+    variant,
+    color,
+    eyeColor,
+    colors,
+    interactive,
+    blink,
+    wander,
+    sleep,
+    manualBlink,
+    eyeSpacing,
+    eyeRadius,
+    eyeHeight,
+    eyeY,
+    shading,
+    speed,
+    onGazeChange,
+  ]);
 
   const resolved = resolveVariant(variant, color, eyeColor, colors);
+
+  const handleClick = () => {
+    instanceRef.current?.triggerBlink();
+    onClick?.();
+  };
 
   return (
     <div
       data-slot="live-orb"
       role="img"
-      aria-label="Orb character"
-      className={cn("relative shrink-0", className)}
-      style={{ width: size, height: size }}
+      aria-label="Interactive Sphere Eyes Character"
+      onClick={handleClick}
+      className={cn("live-orb-wrapper", className)}
+      style={{
+        width: size,
+        height: size,
+        position: "relative",
+        flexShrink: 0,
+        userSelect: "none",
+        cursor: "pointer",
+      }}
     >
       {!hasGl ? (
         <div
           aria-hidden
-          className="absolute inset-[2%] overflow-hidden rounded-full"
-          style={fallbackFaceStyle(resolved)}
+          style={{
+            position: "absolute",
+            inset: "3%",
+            overflow: "hidden",
+            borderRadius: "9999px",
+            backgroundColor: resolved.body,
+          }}
         >
           <span
-            className="absolute rounded-full"
             style={{
+              position: "absolute",
+              borderRadius: "9999px",
               backgroundColor: resolved.eye,
-              width: "13%",
+              width: "14%",
               height: "28%",
-              left: "31%",
-              top: "34%",
+              left: "30%",
+              top: "35%",
             }}
           />
           <span
-            className="absolute rounded-full"
             style={{
+              position: "absolute",
+              borderRadius: "9999px",
               backgroundColor: resolved.eye,
-              width: "13%",
+              width: "14%",
               height: "28%",
               left: "56%",
-              top: "34%",
+              top: "35%",
             }}
           />
         </div>
       ) : null}
-      <canvas ref={canvasRef} className="absolute inset-0 size-full" />
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "block",
+        }}
+      />
     </div>
   );
 }

@@ -1,0 +1,138 @@
+/* A new composition. The existing palette and typefaces remain the identity. */
+.butter-experience { --gallery-gap: 18px; background: var(--paper); }
+.butter-experience main { background: var(--paper); position: relative; z-index: 2; }
+.butter-experience .hero { padding: 0; height: 145svh; min-height: 0; background: var(--paper); }
+.butter-experience .site-nav { position: absolute; inset: 0 3vw auto; z-index: 10; max-width: none; height: 96px; border: 0; }
+.butter-experience .hero-inner { position: sticky; top: 0; height: 100svh; min-height: 0; max-width: none; padding: 100px 3vw 28px; display: flex; flex-direction: column; justify-content: center; }
+.masthead-surface { position: relative; width: 100%; height: min(68vw,70svh); flex: 1; min-height: 0; }
+.type-surface { position: absolute; inset: 0; pointer-events: none; }
+.type-surface canvas { display: block; width: 100%; height: 100%; }
+.butter-experience .hero-name { width: 100%; font-size: 17vw; line-height: .85; text-align: center; padding-top: 4vh; }
+.butter-experience .hero-name .hero-surname { margin: 0 auto; width: 57%; }
+.type-ready .name-mark { opacity: 0; }
+.butter-experience .hero-bottom { position: relative; inset: auto; width: 100%; margin: 0; padding-top: 22px; display: flex; justify-content: space-between; align-items: end; }
+.butter-experience .hero-bottom p { font-size: 13px; line-height: 1.5; }
+.butter-experience .signature-underline,.butter-experience .signature-period { display: none; }
+.butter-experience .projects-wrap { background: transparent; margin-top: -14svh; padding: 0; }
+.butter-experience .projects-section { padding: 24px 22px 140px; max-width: none; background: var(--paper); border-radius: 28px 28px 0 0; }
+.butter-experience .section-heading { margin: 0 0 28px; padding: 0 14px; align-items: center; }
+.butter-experience .section-heading h2 { font: 500 15px var(--sans); letter-spacing: 0; }
+.butter-experience .section-heading h2 span { display: none; }
+.butter-experience .project-count { font-size: 11px; }
+.butter-experience .bento-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gallery-gap); }
+.butter-experience .bento-tile { grid-column: span 6; height: 640px; min-height: 0; border-radius: 7px; padding: 30px; position: relative; display: flex; justify-content: flex-end; align-items: flex-start; flex-direction: column; overflow: hidden; border: 1px solid transparent; transition: background-color .65s cubic-bezier(.2,.7,.2,1),color .5s,border-color .5s; }
+.butter-experience .bento-tile.size-lead { grid-column: span 7; height: 76svh; }
+.butter-experience .bento-tile.size-secondary { grid-column: span 5; height: 76svh; }
+.butter-experience .bento-tile.size-antenna { grid-column: span 12; height: 82svh; }
+.butter-experience .bento-tile.size-small { grid-column: span 4; height: 540px; }
+.butter-experience .bento-tile::before,.butter-experience .bento-tile::after { display: none; }
+.butter-experience .tile-index { position: absolute; top: 29px; left: 30px; font: 10px var(--mono); opacity: .65; }
+.butter-experience .tile-art { position: absolute; inset: 15% 8% 22%; margin: 0; display: grid; place-items: center; width: auto; height: auto; }
+.butter-experience .tile-art .project-visual { width: 100%; height: 100%; min-height: 0; padding: 0; background: none; border: 0; transition: transform 1s cubic-bezier(.2,.7,.2,1),opacity .6s; }
+.butter-experience .tile-art .project-drawing { height: 100%; max-height: 350px; width: 100%; }
+.butter-experience .size-antenna .tile-art { inset: 8% 25% 20%; }
+.butter-experience .tile-title,.butter-experience .size-lead .tile-title,.butter-experience .size-secondary .tile-title { font: 500 clamp(23px,2.5vw,40px)/1.05 var(--display); letter-spacing: -.045em; max-width: 88%; margin: 0 0 10px; transition: opacity .4s,transform .6s; }
+.butter-experience .tile-category { font: 10px var(--mono); opacity: .65; }
+.butter-experience .tile-arrow { top: 22px; right: 24px; width: 36px; height: 36px; font-size: 22px; border: 1px solid currentColor; background: none; }
+.butter-experience .tile-marquee { bottom: 35%; font-size: clamp(70px,9vw,150px); line-height: 1.1; letter-spacing: -.06em; }
+@media (hover:hover) and (pointer:fine) {
+  .butter-experience .bento-tile:hover,.butter-experience .bento-tile:focus-visible { background: var(--blue); color: var(--paper); border-color: var(--blue); }
+  .butter-experience .bento-tile:hover .tile-art .project-visual,.butter-experience .bento-tile:focus-visible .tile-art .project-visual { transform: scale(.86) rotate(-3deg); opacity: .16; }
+  .butter-experience .bento-tile:hover .tile-title,.butter-experience .bento-tile:focus-visible .tile-title { opacity: 0; transform: translateY(15px); }
+}
+.butter-experience .skills-about-stage { background: var(--paper); padding: 0; }
+.butter-experience .skills-section { padding: 80px 4vw 170px; background: var(--ink); color: var(--paper); border-radius: 26px 26px 0 0; }
+.butter-experience .skills-inner { max-width: none; }
+.butter-experience .skills-heading { align-items: start; margin-bottom: 100px; }
+.butter-experience .skills-heading h2 { font: 500 clamp(90px,16vw,250px)/.8 var(--display); letter-spacing: -.075em; }
+.butter-experience .skills-heading h2 span { color: var(--lime); }
+.butter-experience .skills-heading .thread-line { display: none; }
+.butter-experience .skill-ledger { display: block; }
+.butter-experience .skill-panel { position: relative; display: grid; grid-template-columns: 50% 1fr; gap: 24px; padding: 45px 0 38px 5%; min-height: 220px; border: 0; border-top: 1px solid #f8f6ed40; background: none; transition: color .4s; }
+.butter-experience .skill-panel:hover,.butter-experience .skill-panel:focus-within { background: none; color: var(--lime); }
+.butter-experience .skill-panel-heading { position: absolute; left: 0; top: 52px; }
+.butter-experience .skill-panel-heading svg { display: none; }
+.butter-experience .skill-number { color: inherit; font-size: 10px; }
+.butter-experience .skill-panel h3 { font: 400 clamp(30px,4.4vw,72px)/1 var(--display); letter-spacing: -.06em; margin: 0; }
+.butter-experience .skill-inventory { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0; align-content: start; }
+.butter-experience .skill-inventory li { border: 0; background: none; padding: 0; font-size: clamp(17px,1.8vw,26px); line-height: 1.5; }
+.butter-experience .skill-inventory li:hover { color: inherit; background: none; transform: none; }
+.butter-experience .skill-applications { grid-column: 2; margin: 0; padding: 0; border: 0; gap: 10px 20px; }
+.butter-experience .skill-application-label { display: none; }
+.butter-experience .skill-applications button { color: inherit; font-size: 11px; opacity: .65; }
+.butter-experience .about-section { padding: 0; background: var(--lilac); color: var(--ink); }
+.butter-experience .about-surface { padding: 90px 4vw 100px; border-radius: 0; background: none; }
+.butter-experience .about-thread { display: none; }
+.butter-experience .about-intro { display: block; }
+.butter-experience .about-intro h2 { font: 500 14px var(--sans); letter-spacing: 0; margin-bottom: 75px; }
+.butter-experience .about-intro h2 span { display: none; }
+.butter-experience .about-copy { max-width: none; }
+.butter-experience .about-copy .about-statement { font: 500 clamp(60px,10vw,160px)/.95 var(--display); letter-spacing: -.065em; max-width: 1100px; margin: 0; }
+.about-statement span { display: inline; }
+.butter-experience .about-copy p:last-child:not(.about-statement) { margin: 65px 0 100px auto; max-width: 380px; font-size: 19px; line-height: 1.6; }
+.butter-experience .about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 0; }
+.butter-experience .about-fact { padding: 26px 0 0; min-height: 260px; border: 0; border-top: 1px solid var(--line); background: none; }
+.butter-experience .about-fact::before,.butter-experience .about-fact .line-art { display: none; }
+.butter-experience .fact-date { position: static; display: block; margin-bottom: 35px; font-size: 11px; }
+.butter-experience .about-fact h3 { font-size: clamp(28px,3.5vw,56px); margin: 0 0 22px; }
+.butter-experience .fact-bottom { margin-top: 35px; padding: 0; }
+.butter-experience .contact-section { min-height: 100svh; padding: 90px 4vw 30px; background: var(--blue); color: var(--paper); }
+.butter-experience .contact-content { max-width: none; }
+.butter-experience .contact-heading { display: block; }
+.butter-experience .contact-heading h2 { font: 500 clamp(100px,20vw,300px)/.82 var(--display); letter-spacing: -.075em; }
+.butter-experience .contact-heading h2 em { display: block; font-family: var(--serif); font-weight: 400; color: var(--lime); margin-left: 28%; }
+.butter-experience .contact-post,.butter-experience .contact-thread { display: none; }
+.butter-experience .email-row { margin: 90px 0; justify-content: space-between; }
+.butter-experience .email-row>a { font-size: clamp(18px,3vw,44px); color: var(--paper); }
+.butter-experience .copy-button { background: none; color: var(--paper); border-color: #ffffff80; }
+.butter-experience .footer-links { border-color: #ffffff50!important; }
+.experience-pointer { position: fixed; left: 0; top: 0; z-index: 10000; pointer-events: none; opacity: 0; mix-blend-mode: difference; will-change: transform; }
+.experience-pointer span { position: absolute; width: 18px; height: 18px; left: -9px; top: -9px; border-radius: 50%; background: #fff; transition: width .35s,height .35s,left .35s,top .35s; }
+.experience-pointer[data-active=true] span { width: 48px; height: 48px; left: -24px; top: -24px; }
+.experience-pointer[data-project=true] span { width: 76px; height: 76px; left: -38px; top: -38px; }
+@media (pointer:coarse),(prefers-reduced-motion:reduce) { .experience-pointer { display: none; } }
+@media(max-width:760px) {
+  .butter-experience .hero { height: 120svh; }
+  .butter-experience .site-nav { inset-inline: 6vw; height: 80px; }
+  .butter-experience .hero-inner { padding: 80px 6vw 35px; }
+  .masthead-surface { flex: none; height: 46svh; width: 112%; margin-left: -6%; }
+  .butter-experience .hero-name { padding-top: 10vh; font-size: 17vw; }
+  .butter-experience .hero-bottom { margin-top: 30px; gap: 20px; }
+  .butter-experience .hero-bottom p { font-size: 11px; }
+  .butter-experience .hero-bottom .pill { min-width: 95px; padding: 13px 15px; }
+  .butter-experience .projects-wrap { margin-top: -8svh; }
+  .butter-experience .projects-section { padding: 22px 12px 70px; }
+  .butter-experience .bento-grid { gap: 12px; }
+  .butter-experience .bento-tile,.butter-experience .bento-tile.size-lead,.butter-experience .bento-tile.size-secondary,.butter-experience .bento-tile.size-antenna,.butter-experience .bento-tile.size-small { grid-column: span 12; height: 65svh; max-height: 600px; min-height: 380px; padding: 23px; }
+  .butter-experience .tile-title,.butter-experience .size-lead .tile-title,.butter-experience .size-secondary .tile-title { font-size: 32px; }
+  .butter-experience .tile-art,.butter-experience .size-antenna .tile-art { inset: 18% 8% 25%; }
+  .butter-experience .skills-section { padding: 70px 6vw 90px; }
+  .butter-experience .skills-heading { margin-bottom: 60px; }
+  .butter-experience .skill-panel { display: block; padding: 30px 0 35px 30px; min-height: 0; }
+  .butter-experience .skill-panel-heading { top: 38px; }
+  .butter-experience .skill-panel h3 { font-size: 35px; margin-bottom: 23px; }
+  .butter-experience .skill-applications { margin-top: 25px; }
+  .butter-experience .about-surface { padding: 65px 6vw; }
+  .butter-experience .about-intro h2 { margin-bottom: 45px; }
+  .butter-experience .about-copy .about-statement { font-size: 16vw; }
+  .butter-experience .about-copy p:last-child:not(.about-statement) { margin: 45px 0 65px; font-size: 17px; }
+  .butter-experience .about-facts { grid-template-columns: 1fr; gap: 35px; }
+  .butter-experience .about-fact { min-height: 220px; }
+  .butter-experience .contact-section { padding: 75px 6vw 25px; min-height: 90svh; }
+  .butter-experience .contact-heading h2 { font-size: 23vw; }
+  .butter-experience .contact-heading h2 em { margin-left: 12%; }
+  .butter-experience .email-row { margin: 80px 0; gap: 26px; align-items: start; }
+  .butter-experience .email-row>a { font-size: 18px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .butter-experience .hero { height: 100svh; }
+  .butter-experience .tile-marquee { display: none!important; }
+  .butter-experience .tile-title { opacity: 1!important; transform: none!important; }
+  .butter-experience .tile-art .project-visual { opacity: 1!important; transform: none!important; }
+}
+
+@media(min-width:761px) {
+  .butter-experience .skills-section { position: relative; padding-bottom: 220px; }
+  .butter-experience .about-section { position: relative; z-index: 2; margin-top: -50px; border-radius: 35px 35px 0 0; overflow: hidden; }
+  .butter-experience .contact-section { position: sticky; bottom: 0; z-index: 0; }
+}
