@@ -4,3 +4,21 @@
 @media(max-width:767px) { .portfolio-hero-media {width:84vw;height:47.25vw;left:8vw;top:36vh;} }
 .portfolio-email { position:relative; z-index:10; display:block; color:#dbfa58; font-size:clamp(18px,2.3vw,36px); padding:45px 0; text-decoration:none; overflow-wrap:anywhere; }
 .portfolio-email:hover { text-decoration:underline; text-underline-offset:8px; }
+.work-expansion { position:fixed; inset:0; margin:0; padding:0; width:100%; max-width:none; height:100dvh; max-height:none; border:none; background:#f8f6ed; color:#17172b; overflow:auto; overscroll-behavior:contain; font:18px/1.5 system-ui,sans-serif; }
+.work-expansion::backdrop { background:#17172b85; }
+.work-expansion article { max-width:1040px; margin:auto; padding:100px 6vw; }
+.work-expansion h1 { font-size:clamp(50px,8vw,110px); line-height:.98; letter-spacing:-.065em; margin:24px 0; }
+.work-expansion p { max-width:65ch; margin:24px 0; }
+.work-expansion figure { margin:32px 0; }
+.work-expansion img { width:100%; max-height:50vh; object-fit:cover; }
+.work-expansion figcaption,.work-expansion small { font-size:13px; }
+.work-expansion a { text-decoration:underline; }
+.work-close { position:sticky; top:18px; float:right; margin-right:18px; padding:12px 20px; border-radius:30px; background:#17172b; color:#fff; font-size:14px; cursor:pointer; }
+body:has(.work-expansion[open]) { overflow:hidden; }
+/* Reuse the personal seal while the original header keeps its hit areas and transitions. */
+.Header_header__logo__4UCu_ a[href="/"],.Header_header__logofull__H4LVE,.Earth_earth__RSijX,.Dna_dna__rw60U,.Logo_logo___yD0t {
+  background: url('/favicon.svg') center / contain no-repeat;
+}
+.Header_header__logo__4UCu_ a[href="/"] > *, .Header_header__logofull__H4LVE > *, .Earth_earth__RSijX > *, .Dna_dna__rw60U > *, .Logo_logo___yD0t > * { opacity:0; }
+
+.Header_header__icon__en5cF { visibility:hidden; pointer-events:none; }
